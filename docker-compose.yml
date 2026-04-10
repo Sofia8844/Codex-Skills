@@ -1,0 +1,149 @@
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE}
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: ${POSTGRES_HEALTHCHECK_INTERVAL}
+      timeout: ${POSTGRES_HEALTHCHECK_TIMEOUT}
+      retries: ${POSTGRES_HEALTHCHECK_RETRIES}
+  pgadmin:
+    image: ${PG_ADMIN_IMAGE}
+    container_name: ${PG_ADMIN_CONTAINER_NAME}
+    ports:
+      - "${PG_ADMIN_PORT}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+  rabbitmq:
+    image: ${RABBITMQ_IMAGE}
+    container_name: ${RABBITMQ_CONTAINER_NAME}
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    healthcheck: 
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: ${RABBITMQ_HEALTHCHECK_INTERVAL}
+      timeout: ${RABBITMQ_HEALTHCHECK_TIMEOUT}
+      retries: ${RABBITMQ_HEALTHCHECK_RETRIES}
+
+  mailhog:
+    image: ${MAILHOG_IMAGE}
+    container_name: ${MAILHOG_CONTAINER_NAME}
+    ports:
+      - "${MAILHOG_SMTP_PORT}:1025"
+      - "${MAILHOG_UI_PORT}:8025"
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: ${API_CONTAINER_NAME}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH}
+      RABBITMQ_CONNECT_RETRIES: ${RABBITMQ_CONNECT_RETRIES}
+      RABBITMQ_CONNECT_DELAY_MS: ${RABBITMQ_CONNECT_DELAY_MS}
+      SKILL_JOBS_QUEUE: ${SKILL_JOBS_QUEUE}
+      EMAIL_JOBS_QUEUE: ${EMAIL_JOBS_QUEUE}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      PROJECT_ROOT: ${PROJECT_ROOT}
+      MAX_PROCESS_OUTPUT_CHARS: ${MAX_PROCESS_OUTPUT_CHARS}
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./output:/usr/src/app/output
+    restart: ${RESTART_POLICY}
+
+  skill-worker:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: ${SKILL_WORKER_CONTAINER_NAME}
+    command: ["node", "dist/apps/skill-worker/index.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH}
+      RABBITMQ_CONNECT_RETRIES: ${RABBITMQ_CONNECT_RETRIES}
+      RABBITMQ_CONNECT_DELAY_MS: ${RABBITMQ_CONNECT_DELAY_MS}
+      SKILL_JOBS_QUEUE: ${SKILL_JOBS_QUEUE}
+      EMAIL_JOBS_QUEUE: ${EMAIL_JOBS_QUEUE}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      PROJECT_ROOT: ${PROJECT_ROOT}
+      MAX_PROCESS_OUTPUT_CHARS: ${MAX_PROCESS_OUTPUT_CHARS}
+    volumes:
+      - ./output:/usr/src/app/output
+      - ${CODEX_HOME_HOST}:/root/.codex
+    restart: ${RESTART_POLICY}
+
+  email-worker:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: ${EMAIL_WORKER_CONTAINER_NAME}
+    command: ["node", "dist/apps/email-worker/index.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH}
+      RABBITMQ_CONNECT_RETRIES: ${RABBITMQ_CONNECT_RETRIES}
+      RABBITMQ_CONNECT_DELAY_MS: ${RABBITMQ_CONNECT_DELAY_MS}
+      SKILL_JOBS_QUEUE: ${SKILL_JOBS_QUEUE}
+      EMAIL_JOBS_QUEUE: ${EMAIL_JOBS_QUEUE}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      PROJECT_ROOT: ${PROJECT_ROOT}
+      MAX_PROCESS_OUTPUT_CHARS: ${MAX_PROCESS_OUTPUT_CHARS}
+    restart: ${RESTART_POLICY}
+
+volumes:
+  postgres_data:

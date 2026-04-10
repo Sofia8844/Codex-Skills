@@ -1,0 +1,36 @@
+{
+  "name": "codex-async-jobs-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc --noEmit",
+    "dev:api": "tsx watch src/apps/api/server.ts",
+    "dev:skill-worker": "tsx watch src/apps/skill-worker/index.ts",
+    "dev:email-worker": "tsx watch src/apps/email-worker/index.ts",
+    "start:api": "node dist/apps/api/server.js",
+    "start:skill-worker": "node dist/apps/skill-worker/index.js",
+    "start:email-worker": "node dist/apps/email-worker/index.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nodemailer": "^6.9.16",
+    "pg": "^8.13.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.6",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

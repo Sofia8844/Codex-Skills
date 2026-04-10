@@ -1,0 +1,7 @@
+interface:
+  display_name: "Generar Presentacion"
+  short_description: "Crea presentaciones desde plantilla y contenido"
+  default_prompt: "Use $generar-presentacion to build a presentation from a template and source document, preserving the template's colors, backgrounds, structure, and closing flow."
+
+policy:
+  allow_implicit_invocation: true

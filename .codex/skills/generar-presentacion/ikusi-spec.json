@@ -1,0 +1,215 @@
+{
+  "template_path": "${skill_root}/assets/default-template.pptx",
+  "output_pptx": "${repo_root}/output/presentacion-ikusi.pptx",
+  "output_notes": "${repo_root}/output/presentacion-ikusi-fuentes.md",
+  "extra_output_paths": [
+    "${repo_root}/presentacion-ikusi.pptx"
+  ],
+  "notes_markdown_path": "${skill_root}/ikusi-fuentes.md",
+  "slide_order": [
+    1,
+    5,
+    19,
+    26,
+    25,
+    8,
+    31
+  ],
+  "slide_replacements": {
+    "1": [
+      [
+        "Ikusi: trayectoria, capacidades y relevancia actual"
+      ],
+      [
+        "Una mirada breve a su historia, propuesta de valor y posicionamiento"
+      ]
+    ],
+    "5": [
+      [
+        "Ruta de la presentacion"
+      ],
+      [
+        "Historia"
+      ],
+      [
+        "De 1971 a su enfoque actual en servicios avanzados de tecnologia"
+      ],
+      [
+        "Oferta"
+      ],
+      [
+        "Redes, cloud, ciberseguridad y observabilidad"
+      ],
+      [
+        "Diferenciales"
+      ],
+      [
+        "Presencia regional, soporte 24x7 y credenciales tecnicas"
+      ],
+      [
+        "Actualidad"
+      ],
+      [
+        "Senales recientes de traccion en 2025 y 2026"
+      ],
+      [
+        "1"
+      ],
+      [
+        "2"
+      ],
+      [
+        "3"
+      ],
+      [
+        "4"
+      ]
+    ],
+    "8": [
+      [
+        "Senales de avance reciente"
+      ],
+      [
+        "Sector financiero"
+      ],
+      [
+        "Mercados clave"
+      ],
+      [
+        "En Money Expo Mexico 2026 reforzo su propuesta para modernizacion, disponibilidad y seguridad."
+      ],
+      [
+        "En enero de 2026 remarco a Mexico y Colombia como mercados estrategicos."
+      ],
+      [
+        "Premios 2025"
+      ],
+      [
+        "Ikusi Colombia obtuvo 7 premios Cisco, incluido Cisco Colombia Partner of the Year."
+      ],
+      [
+        "1"
+      ],
+      [
+        "3"
+      ],
+      [
+        "2"
+      ]
+    ],
+    "19": [
+      [
+        "Como ha avanzado Ikusi en el tiempo"
+      ],
+      [
+        "1"
+      ],
+      [
+        "1971"
+      ],
+      [
+        "Nace Ikusi."
+      ],
+      [
+        "2003"
+      ],
+      [
+        "Inicia operaciones en Mexico tras adquirir GS Communications."
+      ],
+      [
+        "2010"
+      ],
+      [
+        "Se integra a Velatia y gana mayor escala internacional."
+      ],
+      [
+        "2013"
+      ],
+      [
+        "Daxa Colombia entra a formar parte de Ikusi."
+      ],
+      [
+        "2024"
+      ],
+      [
+        "Escinde transporte en Trebide y refuerza su foco en servicios avanzados."
+      ],
+      [
+        "2"
+      ],
+      [
+        "3"
+      ],
+      [
+        "4"
+      ],
+      [
+        "5"
+      ]
+    ],
+    "25": [
+      [
+        "Por que Ikusi destaca"
+      ],
+      [
+        "Su posicionamiento se apoya en cuatro elementos:",
+        "Presencia en Espana, Mexico, Colombia y Chile, con Mexico y Colombia como mercados estrategicos.",
+        "Parte de Velatia y enfocada en servicios avanzados para digitalizacion segura.",
+        "Modelo integral: ingenieria, implementacion, soporte, administracion y monitoreo.",
+        "Ikusi ONCE atiende 24x7 con 100+ ingenieros, 50.000+ dispositivos y 90.000+ tickets al ano."
+      ]
+    ],
+    "26": [
+      [
+        "Donde aporta mas valor"
+      ],
+      [
+        "Redes"
+      ],
+      [
+        "Cloud"
+      ],
+      [
+        "Ciberseguridad"
+      ],
+      [
+        "Observabilidad"
+      ],
+      [
+        "Disena y opera redes empresariales robustas, seguras y eficientes."
+      ],
+      [
+        "Despliega infraestructuras escalables para nuevas cargas y servicios digitales."
+      ],
+      [
+        "Gestiona riesgos con servicios de proteccion, respuesta y monitoreo continuo."
+      ],
+      [
+        "Une datos y contexto para entender en tiempo real la salud operativa."
+      ],
+      [
+        "1"
+      ],
+      [
+        "3"
+      ],
+      [
+        "2"
+      ],
+      [
+        "4"
+      ]
+    ],
+    "31": [
+      [
+        "Cierre"
+      ],
+      [
+        "Ikusi llega a 2026 con una propuesta clara: ayudar a las organizaciones a digitalizarse con redes, cloud, ciberseguridad y servicios gestionados confiables."
+      ],
+      [
+        "Please keep this slide for attribution"
+      ]
+    ]
+  }
+}

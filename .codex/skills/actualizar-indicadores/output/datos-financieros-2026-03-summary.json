@@ -1,0 +1,17 @@
+{
+  "source_file": "C:\\Users\\sofia\\OneDrive\\Documentos\\PROJECT-SKILLS\\.codex\\skills\\actualizar-indicadores\\output\\Datos_Financieros_Semanales.xlsx",
+  "output_file": "C:\\Users\\sofia\\OneDrive\\Documentos\\PROJECT-SKILLS\\.codex\\skills\\actualizar-indicadores\\output\\Datos_Financieros_Semanales.xlsx",
+  "backup_file": "C:\\Users\\sofia\\OneDrive\\Documentos\\PROJECT-SKILLS\\.codex\\skills\\actualizar-indicadores\\output\\Datos_Financieros_Semanales_2026_03_backup_2.xlsx",
+  "sheet_name": "Hoja1",
+  "week": "2026-03",
+  "action": "updated",
+  "changed_fields": {},
+  "calculated_metrics": {
+    "retention_rate": 1.0,
+    "loss_percentage": 0.0744,
+    "margin": 0.9256
+  },
+  "warnings": [
+    "Week '2026-01' could not calculate retention_rate because previous_customers is missing."
+  ]
+}

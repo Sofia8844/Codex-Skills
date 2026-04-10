@@ -1,0 +1,7 @@
+interface:
+  display_name: "Actualizar Indicadores"
+  short_description: "Actualiza archivos de indicadores semanales"
+  default_prompt: "Use $actualizar-indicadores to update a named CSV or Excel indicators file with weekly data, or fall back to assets/Datos_Financieros_Semanales.xlsx and keep the live workbook inside actualizar-indicadores/output/."
+
+policy:
+  allow_implicit_invocation: true

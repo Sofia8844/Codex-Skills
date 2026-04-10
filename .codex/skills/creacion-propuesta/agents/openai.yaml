@@ -1,0 +1,7 @@
+interface:
+  display_name: "Creacion Propuesta"
+  short_description: "Personaliza propuestas PPT con clientes, precios y PDFs"
+  default_prompt: "Use $creacion-propuesta to personalize a corporate proposal deck, keeping company information fixed, updating client and pricing content, reading local product PDFs from the skill when needed, and adding optional product slides, logos, or images."
+
+policy:
+  allow_implicit_invocation: true

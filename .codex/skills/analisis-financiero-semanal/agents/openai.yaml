@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analisis Financiero Semanal"
+  short_description: "Cruce Excel y base via MCP para insights semanales"
+  default_prompt: "Usa $analisis-financiero-semanal para cruzar el Excel semanal con la base via MCP, validar KPIs y reportar rapido cualquier bloqueo del MCP."
