@@ -1,0 +1,224 @@
+{
+  "version": "1.0.0",
+  "units": {
+    "throughput": "Mbps",
+    "area": "m2",
+    "cost": "USD"
+  },
+  "traffic_profiles": {
+    "low": {
+      "target_clients_per_ap": 45,
+      "coverage_multiplier": 1.0,
+      "internet_headroom_factor": 1.2,
+      "requires_qos": false
+    },
+    "medium": {
+      "target_clients_per_ap": 35,
+      "coverage_multiplier": 0.9,
+      "internet_headroom_factor": 1.3,
+      "requires_qos": false
+    },
+    "high": {
+      "target_clients_per_ap": 25,
+      "coverage_multiplier": 0.75,
+      "internet_headroom_factor": 1.45,
+      "requires_qos": true
+    },
+    "critical": {
+      "target_clients_per_ap": 20,
+      "coverage_multiplier": 0.65,
+      "internet_headroom_factor": 1.6,
+      "requires_qos": true
+    }
+  },
+  "device_type_defaults": {
+    "laptops": {
+      "concurrency_ratio": 0.85,
+      "wired_ratio": 0.35,
+      "poe_ratio": 0.0,
+      "mbps_by_profile": {"low": 1.5, "medium": 3.0, "high": 6.0, "critical": 7.0},
+      "recommended_vlan": "corporate"
+    },
+    "mobiles": {
+      "concurrency_ratio": 0.65,
+      "wired_ratio": 0.0,
+      "poe_ratio": 0.0,
+      "mbps_by_profile": {"low": 0.8, "medium": 1.5, "high": 3.0, "critical": 4.0},
+      "recommended_vlan": "corporate_mobile"
+    },
+    "iot": {
+      "concurrency_ratio": 0.95,
+      "wired_ratio": 0.45,
+      "poe_ratio": 0.25,
+      "mbps_by_profile": {"low": 0.2, "medium": 0.5, "high": 1.0, "critical": 1.5},
+      "recommended_vlan": "iot"
+    },
+    "phones": {
+      "concurrency_ratio": 0.8,
+      "wired_ratio": 0.9,
+      "poe_ratio": 0.9,
+      "mbps_by_profile": {"low": 0.1, "medium": 0.2, "high": 0.3, "critical": 0.3},
+      "recommended_vlan": "voice"
+    },
+    "cameras": {
+      "concurrency_ratio": 1.0,
+      "wired_ratio": 1.0,
+      "poe_ratio": 1.0,
+      "mbps_by_profile": {"low": 2.0, "medium": 4.0, "high": 6.0, "critical": 8.0},
+      "recommended_vlan": "security"
+    },
+    "printers": {
+      "concurrency_ratio": 0.35,
+      "wired_ratio": 0.9,
+      "poe_ratio": 0.0,
+      "mbps_by_profile": {"low": 0.2, "medium": 0.5, "high": 1.0, "critical": 1.0},
+      "recommended_vlan": "services"
+    },
+    "servers": {
+      "concurrency_ratio": 1.0,
+      "wired_ratio": 1.0,
+      "poe_ratio": 0.0,
+      "mbps_by_profile": {"low": 5.0, "medium": 15.0, "high": 40.0, "critical": 60.0},
+      "recommended_vlan": "server"
+    },
+    "unknown": {
+      "concurrency_ratio": 0.75,
+      "wired_ratio": 0.25,
+      "poe_ratio": 0.05,
+      "mbps_by_profile": {"low": 1.0, "medium": 2.0, "high": 4.0, "critical": 5.0},
+      "recommended_vlan": "corporate"
+    }
+  },
+  "environment_profiles": {
+    "small_office": {
+      "coverage_m2_per_ap": 180,
+      "capacity_factor": 1.0,
+      "min_ap_per_floor": 1
+    },
+    "corporate": {
+      "coverage_m2_per_ap": 150,
+      "capacity_factor": 1.0,
+      "min_ap_per_floor": 1
+    },
+    "high_density": {
+      "coverage_m2_per_ap": 90,
+      "capacity_factor": 0.8,
+      "min_ap_per_floor": 2
+    },
+    "industrial": {
+      "coverage_m2_per_ap": 110,
+      "capacity_factor": 0.85,
+      "min_ap_per_floor": 1
+    },
+    "mixed": {
+      "coverage_m2_per_ap": 130,
+      "capacity_factor": 0.9,
+      "min_ap_per_floor": 1
+    }
+  },
+  "edge_device_tiers": [
+    {
+      "name": "branch_router_firewall",
+      "max_supported_clients": 80,
+      "recommended_throughput_mbps": 300,
+      "typical_cost": 650,
+      "use_when": "Oficina pequena o sucursal con bajo trafico."
+    },
+    {
+      "name": "business_router_firewall",
+      "max_supported_clients": 200,
+      "recommended_throughput_mbps": 1000,
+      "typical_cost": 1800,
+      "use_when": "Sede mediana con seguridad perimetral y VPN."
+    },
+    {
+      "name": "enterprise_utm_firewall",
+      "max_supported_clients": 500,
+      "recommended_throughput_mbps": 2500,
+      "typical_cost": 5200,
+      "use_when": "Sede corporativa, alto trafico, inspeccion y HA."
+    },
+    {
+      "name": "campus_edge_cluster",
+      "max_supported_clients": 1200,
+      "recommended_throughput_mbps": 10000,
+      "typical_cost": 16000,
+      "use_when": "Campus o alta densidad con multiples enlaces y HA."
+    }
+  ],
+  "switching": {
+    "access_switch_port_options": [24, 48],
+    "port_reserve_factor": 1.2,
+    "poe_reserve_factor": 1.15,
+    "distribution_required_when_floors_gte": 2,
+    "distribution_required_when_access_switches_gte": 3,
+    "l3_core_required_when_vlans_gte": 4,
+    "costs": {
+      "access_24_poe": 900,
+      "access_48_poe": 1700,
+      "distribution_l3": 3200,
+      "core_l3_pair": 8500
+    }
+  },
+  "wireless": {
+    "ap_cost_by_budget": {"low": 180, "medium": 420, "high": 750},
+    "controller_recommended_when_ap_count_gte": 4,
+    "controller_cost": 900,
+    "load_balancing_recommended_when_ap_count_gte": 3,
+    "fast_roaming_required_for_services": ["voice", "video", "pos", "ot_control"]
+  },
+  "segmentation": {
+    "base_vlans": ["management", "corporate", "guest"],
+    "device_vlans": {
+      "iot": "iot",
+      "phones": "voice",
+      "cameras": "security",
+      "printers": "services",
+      "servers": "server"
+    },
+    "critical_service_vlans": {
+      "voice": "voice",
+      "video": "collaboration",
+      "erp": "business_critical",
+      "pos": "pos",
+      "ot_control": "ot",
+      "security": "security"
+    }
+  },
+  "redundancy": {
+    "levels": {
+      "false": {"edge_devices": 1, "dual_isp": false, "stacking": false, "core_pair": false},
+      "basic": {"edge_devices": 1, "dual_isp": true, "stacking": false, "core_pair": false},
+      "high": {"edge_devices": 2, "dual_isp": true, "stacking": true, "core_pair": true},
+      "mission_critical": {"edge_devices": 2, "dual_isp": true, "stacking": true, "core_pair": true, "diverse_paths": true}
+    },
+    "critical_services_raise_minimum_to": "high"
+  },
+  "budget": {
+    "level_multipliers": {"low": 0.8, "medium": 1.0, "high": 1.25},
+    "conflict_rules": [
+      {
+        "id": "BUD-001",
+        "condition": "budget_level low with high or mission_critical redundancy",
+        "message": "Budget low conflicts with requested availability; propose phased redundancy."
+      },
+      {
+        "id": "BUD-002",
+        "condition": "budget_usd below rough bill of materials",
+        "message": "Numeric budget below estimated design cost; reduce scope or phase deployment."
+      }
+    ]
+  },
+  "rule_catalog": [
+    {"id": "WIFI-001", "name": "AP capacity", "logic": "AP count by capacity = ceil(concurrent wireless clients / target clients per AP adjusted by environment)."},
+    {"id": "WIFI-002", "name": "AP coverage", "logic": "AP count by coverage = ceil(area_m2 / adjusted coverage per AP)."},
+    {"id": "WIFI-003", "name": "Minimum per floor", "logic": "AP count must be at least min_ap_per_floor * floors."},
+    {"id": "EDGE-001", "name": "Edge throughput", "logic": "Select the smallest edge router/firewall tier whose throughput and client capacity exceed requirements."},
+    {"id": "SW-001", "name": "Access switching", "logic": "Switch ports include wired endpoints plus AP uplinks plus reserve."},
+    {"id": "SEG-001", "name": "Guest isolation", "logic": "Guest traffic must be isolated from corporate networks."},
+    {"id": "SEG-002", "name": "Device isolation", "logic": "IoT, voice, camera, OT and server traffic need dedicated VLANs when present."},
+    {"id": "RED-001", "name": "Availability", "logic": "High or mission-critical redundancy requires dual WAN and HA edge devices."},
+    {"id": "QOS-001", "name": "Critical traffic", "logic": "High or critical traffic and voice/video services require QoS and roaming controls."},
+    {"id": "BUD-001", "name": "Budget conflict", "logic": "Low budget is incompatible with high availability unless deployment is phased."}
+  ]
+}

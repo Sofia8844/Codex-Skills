@@ -1,0 +1,3 @@
+display_name: "Cotizacion Redes Empresariales"
+short_description: "Convierte disenos de red en SKUs y costos."
+default_prompt: "Cotiza una solucion de red empresarial a partir de una salida tecnica previa, usando catalogo JSON, reglas y motor deterministico."

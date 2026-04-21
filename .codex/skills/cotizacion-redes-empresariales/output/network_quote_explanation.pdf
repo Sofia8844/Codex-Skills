@@ -1,0 +1,165 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 3137 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+50 760 Td
+(Network Quote Explanation) Tj
+T*
+() Tj
+T*
+(Sitio: Sede Norte) Tj
+T*
+() Tj
+T*
+(Resultado) Tj
+T*
+(Estado: ok. Subtotal preliminar: 26355.0 USD.) Tj
+T*
+() Tj
+T*
+(Productos seleccionados) Tj
+T*
+(- MR36-HW: 6 x Cisco Meraki MR36 \(access_point\) por 4140.0 USD. Razón: Uses AP quantity from) Tj
+T*
+(technical design \(6\). Selected active Cisco Meraki MR model. Matches preferred manufacturer.) Tj
+T*
+(Fits environment corporate. Fits budget level medium.) Tj
+T*
+(- C9200L-48P-4G-E: 2 x Cisco Catalyst 9200L 48-port PoE+ \(switch\) por 6800.0 USD. Razón: Uses) Tj
+T*
+(switch quantity from technical design \(2\). Requires at least 36 ports and 20 PoE ports per) Tj
+T*
+(switch. Selected C9200L-48P-4G-E with 48 ports. Matches preferred manufacturer. Fits) Tj
+T*
+(environment corporate. Fits budget level medium. Supports stacking for redundant access) Tj
+T*
+(design.) Tj
+T*
+(- MX85-HW: 2 x Cisco Meraki MX85 \(firewall\) por 6400.0 USD. Razón: Requires throughput >= 850) Tj
+T*
+(Mbps. Selected MX85-HW with 1000 Mbps catalog throughput. Quantity 2 follows redundancy level) Tj
+T*
+(high. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium.) Tj
+T*
+() Tj
+T*
+(Licencias, soporte y accesorios) Tj
+T*
+(- MR-ENT-3Y: 6 unidad\(es\), total 1800.0 USD. Razón: License required by MR36-HW.) Tj
+T*
+(- AIR-AP-BRACKET-1: 6 unidad\(es\), total 120.0 USD. Razón: Accessory required for MR36-HW.) Tj
+T*
+(- DNA-E-3Y: 2 unidad\(es\), total 900.0 USD. Razón: License required by C9200L-48P-4G-E.) Tj
+T*
+(- SNTC-8X5-C9200L-48P: 2 unidad\(es\), total 780.0 USD. Razón: Support added for) Tj
+T*
+(C9200L-48P-4G-E.) Tj
+T*
+(- CAB-STK-E-0.5M: 1 unidad\(es\), total 95.0 USD. Razón: Accessory required for C9200L-48P-4G-E.) Tj
+T*
+(- GLC-TE: 4 unidad\(es\), total 720.0 USD. Razón: Accessory required for C9200L-48P-4G-E.) Tj
+T*
+(- LIC-MX85-SEC-3Y: 2 unidad\(es\), total 4600.0 USD. Razón: License required by MX85-HW.) Tj
+T*
+() Tj
+T*
+(Bundles y reglas) Tj
+T*
+(- BNDL-CISCO-CORP-WIFI: Cisco Corporate Wireless Bundle \(descuento estimado 0.0\).) Tj
+T*
+(- BNDL-CISCO-CORP-LAN: Cisco Corporate LAN Bundle \(descuento estimado 0.0\).) Tj
+T*
+(- BNDL-CISCO-CORP-EDGE: Cisco Corporate Edge Bundle \(descuento estimado 0.0\).) Tj
+T*
+(- BNDL-MERAKI-BRANCH: Meraki Cloud Branch Bundle \(descuento estimado 0.0\).) Tj
+T*
+(- QUOTE-001: Excluded non-active APs before selection.) Tj
+T*
+(- QUOTE-002: Applied manufacturer preference as soft criterion.) Tj
+T*
+(- QUOTE-003: Selected AP model from catalog using environment and budget fit.) Tj
+T*
+(- QUOTE-001: Excluded non-active switches before selection.) Tj
+T*
+(- QUOTE-002: Applied manufacturer preference as soft criterion.) Tj
+T*
+(- QUOTE-004: Selected switch by required ports and PoE per switch.) Tj
+T*
+(- QUOTE-001: Excluded non-active firewalls before selection.) Tj
+T*
+(- QUOTE-002: Applied manufacturer preference as soft criterion.) Tj
+T*
+(- QUOTE-005: Selected firewall by edge category and throughput.) Tj
+T*
+(- QUOTE-010: Set edge quantity minimum to 2 and required HA-capable product.) Tj
+T*
+(- QUOTE-007: Included license dependencies for MR36-HW.) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 759 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+50 760 Td
+(- QUOTE-008: Included support dependencies for MR36-HW.) Tj
+T*
+(- QUOTE-009: Evaluated required accessories for MR36-HW.) Tj
+T*
+(- QUOTE-007: Included license dependencies for C9200L-48P-4G-E.) Tj
+T*
+(- QUOTE-008: Included support dependencies for C9200L-48P-4G-E.) Tj
+T*
+(- QUOTE-009: Evaluated required accessories for C9200L-48P-4G-E.) Tj
+T*
+(- QUOTE-007: Included license dependencies for MX85-HW.) Tj
+T*
+(- QUOTE-008: Included support dependencies for MX85-HW.) Tj
+T*
+(- QUOTE-014: Suggested bundles whose required categories are present.) Tj
+T*
+(- QUOTE-011: Detected numeric budget conflict.) Tj
+T*
+() Tj
+T*
+(Advertencias y restricciones) Tj
+T*
+(- BUDGET-001: Budget 25000 USD is below estimated subtotal 26355 USD.) Tj
+ET
+endstream
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000317 00000 n 
+0000003506 00000 n 
+0000003632 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+4442
+%%EOF

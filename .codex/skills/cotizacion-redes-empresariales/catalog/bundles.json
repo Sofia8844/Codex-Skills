@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Suggested bundle definitions. Bundles are advisory unless pricing_behavior is discount.",
+  "bundles": [
+    {
+      "bundle_id": "BNDL-CISCO-CORP-WIFI",
+      "manufacturer": "Cisco",
+      "name": "Cisco Corporate Wireless Bundle",
+      "description": "Catalyst APs with DNA Wireless licensing and Smart Net support.",
+      "pricing_behavior": "informational",
+      "discount_percent": 0,
+      "requires_categories": ["access_point", "license"],
+      "recommended_for": ["corporate", "mixed"],
+      "components": ["C9115AXI-E", "C9120AXI-E", "DNA-WIRELESS-3Y"],
+      "tags": ["wireless", "corporate"]
+    },
+    {
+      "bundle_id": "BNDL-CISCO-CORP-LAN",
+      "manufacturer": "Cisco",
+      "name": "Cisco Corporate LAN Bundle",
+      "description": "Catalyst access switching with DNA Essentials, support and basic uplink optics.",
+      "pricing_behavior": "informational",
+      "discount_percent": 0,
+      "requires_categories": ["switch", "license", "support"],
+      "recommended_for": ["corporate", "mixed"],
+      "components": ["C9200L-24P-4G-E", "C9200L-48P-4G-E", "DNA-E-3Y"],
+      "tags": ["switching", "corporate"]
+    },
+    {
+      "bundle_id": "BNDL-CISCO-CORP-EDGE",
+      "manufacturer": "Cisco",
+      "name": "Cisco Corporate Edge Bundle",
+      "description": "Firepower edge firewall with security subscription and support.",
+      "pricing_behavior": "informational",
+      "discount_percent": 0,
+      "requires_categories": ["firewall", "license", "support"],
+      "recommended_for": ["corporate", "mixed"],
+      "components": ["FPR1120-NGFW-K9", "L-FPR1120T-TMC-3Y"],
+      "tags": ["edge", "security"]
+    },
+    {
+      "bundle_id": "BNDL-CISCO-HIGH-DENSITY",
+      "manufacturer": "Cisco",
+      "name": "Cisco High Density Enterprise Bundle",
+      "description": "Higher-tier APs, Catalyst 9300 switching and enterprise firewall options.",
+      "pricing_behavior": "discount",
+      "discount_percent": 5,
+      "requires_categories": ["access_point", "switch", "firewall"],
+      "recommended_for": ["high_density", "industrial"],
+      "components": ["CW9164I-MR", "C9300-48P-E", "FPR1140-NGFW-K9"],
+      "tags": ["high_density", "enterprise"]
+    },
+    {
+      "bundle_id": "BNDL-MERAKI-BRANCH",
+      "manufacturer": "Cisco",
+      "name": "Meraki Cloud Branch Bundle",
+      "description": "Cloud-managed MR wireless and MX edge security for branch sites.",
+      "pricing_behavior": "informational",
+      "discount_percent": 0,
+      "requires_categories": ["access_point", "firewall", "license"],
+      "recommended_for": ["small_office", "corporate"],
+      "components": ["MR36-HW", "MX85-HW", "MR-ENT-3Y", "LIC-MX85-SEC-3Y"],
+      "tags": ["cloud_managed", "branch"]
+    }
+  ]
+}

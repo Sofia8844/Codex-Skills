@@ -1,0 +1,15 @@
+{
+  "site_name": "Oficina pequena",
+  "environment": "small_office",
+  "devices": {
+    "laptops": 18,
+    "mobiles": 22,
+    "printers": 2
+  },
+  "traffic_profile": "medium",
+  "floors": 1,
+  "area_m2": 220,
+  "redundancy_required": "basic",
+  "budget_level": "low",
+  "critical_services": []
+}

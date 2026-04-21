@@ -1,0 +1,249 @@
+{
+  "schema_version": "1.0.0",
+  "selection_policy": {
+    "currency": "USD",
+    "budget_rank": {
+      "low": 1,
+      "medium": 2,
+      "high": 3
+    },
+    "status_allowed_for_selection": ["active"],
+    "status_disallowed": ["eol", "eos", "discontinued"],
+    "manufacturer_preference_mode": "soft_preference",
+    "default_support_term_months": 36,
+    "prefer_lowest_price_that_meets_requirements": true
+  },
+  "category_requirements": {
+    "access_point": {
+      "required_design_fields": ["recommended_access_points"],
+      "capacity_fields": ["environment"],
+      "selection_order": [
+        "active_status",
+        "manufacturer_preference",
+        "environment_fit",
+        "budget_fit",
+        "lowest_price"
+      ]
+    },
+    "switch": {
+      "required_design_fields": [
+        "recommended_access_switches",
+        "required_switch_ports_with_reserve",
+        "required_poe_ports_with_reserve"
+      ],
+      "capacity_fields": ["ports", "poe_ports", "stackable"],
+      "selection_order": [
+        "active_status",
+        "manufacturer_preference",
+        "ports_per_switch",
+        "poe_ports_per_switch",
+        "stacking_when_redundant",
+        "budget_fit",
+        "lowest_price"
+      ]
+    },
+    "firewall": {
+      "required_design_fields": [
+        "edge_category",
+        "estimated_required_throughput_mbps"
+      ],
+      "capacity_fields": ["edge_category", "throughput_mbps", "ha_capable"],
+      "selection_order": [
+        "active_status",
+        "manufacturer_preference",
+        "edge_category",
+        "throughput_mbps",
+        "ha_when_redundant",
+        "budget_fit",
+        "lowest_price"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "id": "QUOTE-001",
+      "description": "Excluir productos no activos de seleccion directa",
+      "priority": 100,
+      "conditions": {
+        "product.status": ["eol", "eos", "discontinued"]
+      },
+      "action": {
+        "exclude": true,
+        "use_replacement_when_available": true
+      },
+      "reason": "Los productos EOL/EOS no deben cotizarse como seleccion principal."
+    },
+    {
+      "id": "QUOTE-002",
+      "description": "Priorizar fabricante preferido cuando exista candidato valido",
+      "priority": 90,
+      "conditions": {
+        "input.manufacturer_preference": "present"
+      },
+      "action": {
+        "prefer": "product.manufacturer"
+      },
+      "reason": "La preferencia de fabricante es criterio comercial, siempre que no rompa capacidad o compatibilidad."
+    },
+    {
+      "id": "QUOTE-003",
+      "description": "Seleccionar access point por entorno, estado activo y nivel de presupuesto",
+      "priority": 80,
+      "conditions": {
+        "category": "access_point",
+        "technical_design.recommended_access_points": "present"
+      },
+      "action": {
+        "select_lowest_price_that_matches": ["environment_fit", "budget_fit", "manufacturer_preference"]
+      },
+      "reason": "La cantidad de APs viene del dimensionamiento previo; aqui se elige el modelo que encaja con entorno y preferencia."
+    },
+    {
+      "id": "QUOTE-004",
+      "description": "Seleccionar switch por puertos y PoE requeridos por switch",
+      "priority": 80,
+      "conditions": {
+        "category": "switch",
+        "technical_design.recommended_access_switches": "present"
+      },
+      "action": {
+        "match_capacity": ["ports", "poe_ports"],
+        "round_required_per_switch": true
+      },
+      "reason": "El switch seleccionado debe cubrir puertos totales y puertos PoE con la cantidad de switches ya dimensionada."
+    },
+    {
+      "id": "QUOTE-005",
+      "description": "Seleccionar firewall o edge device por categoria y throughput",
+      "priority": 80,
+      "conditions": {
+        "category": "firewall",
+        "technical_design.estimated_required_throughput_mbps": "present"
+      },
+      "action": {
+        "match_capacity": ["edge_category", "throughput_mbps"]
+      },
+      "reason": "El edge seleccionado debe superar el throughput requerido y corresponder al tier tecnico recomendado."
+    },
+    {
+      "id": "QUOTE-006",
+      "description": "Usar reemplazo cuando el SKU solicitado o candidato este EOL/EOS",
+      "priority": 75,
+      "conditions": {
+        "product.status": ["eol", "eos"],
+        "product.replacement_sku": "present"
+      },
+      "action": {
+        "suggest_replacement": true
+      },
+      "reason": "Un producto con reemplazo declarado debe convertirse en alternativa activa antes de cotizar."
+    },
+    {
+      "id": "QUOTE-007",
+      "description": "Agregar licencia obligatoria cuando el producto la requiera",
+      "priority": 70,
+      "conditions": {
+        "product.requires_license": true
+      },
+      "action": {
+        "include_related": "licenses"
+      },
+      "reason": "El producto requiere licenciamiento para operar correctamente o ser gestionado."
+    },
+    {
+      "id": "QUOTE-008",
+      "description": "Agregar soporte cuando el producto lo requiera o el usuario solicite soporte",
+      "priority": 65,
+      "conditions": {
+        "product.requires_support": true,
+        "input.needs.support": true
+      },
+      "action": {
+        "include_related": "support"
+      },
+      "reason": "La cotizacion debe incluir cobertura de soporte para equipos criticos o cuando el alcance lo pida."
+    },
+    {
+      "id": "QUOTE-009",
+      "description": "Agregar accesorios requeridos por instalacion, uplink, HA o stacking",
+      "priority": 60,
+      "conditions": {
+        "product.related.accessories": "present"
+      },
+      "action": {
+        "include_related": "accessories_when_required"
+      },
+      "reason": "Accesorios como brackets, transceivers o cables de stacking evitan una cotizacion incompleta."
+    },
+    {
+      "id": "QUOTE-010",
+      "description": "Duplicar edge devices cuando la redundancia efectiva sea alta o critica",
+      "priority": 55,
+      "conditions": {
+        "technical_design.effective_redundancy_level": ["high", "mission_critical"]
+      },
+      "action": {
+        "edge_quantity_minimum": 2,
+        "require_ha_capable": true
+      },
+      "reason": "La alta disponibilidad requiere par HA o equipo equivalente capaz de operar redundante."
+    },
+    {
+      "id": "QUOTE-011",
+      "description": "Detectar conflicto cuando el presupuesto numerico sea menor al subtotal",
+      "priority": 50,
+      "conditions": {
+        "input.budget_usd": "present"
+      },
+      "action": {
+        "compare_budget_to_subtotal": true
+      },
+      "reason": "Un presupuesto menor al subtotal estimado debe reportarse como restriccion, no ocultarse reduciendo alcance tecnico."
+    },
+    {
+      "id": "QUOTE-012",
+      "description": "Proponer alternativa cuando no exista coincidencia exacta",
+      "priority": 45,
+      "conditions": {
+        "candidate.exact_match": false
+      },
+      "action": {
+        "select_nearest_higher_capacity": true,
+        "warn_user": true
+      },
+      "reason": "Si no hay coincidencia exacta, se prefiere una alternativa activa con capacidad igual o superior."
+    },
+    {
+      "id": "QUOTE-013",
+      "description": "Validar compatibilidad basica entre producto y relacionado",
+      "priority": 40,
+      "conditions": {
+        "related_item.compatible_with": "present"
+      },
+      "action": {
+        "include_only_if_parent_sku_is_compatible": true
+      },
+      "reason": "Licencias, soporte y accesorios deben declarar compatibilidad con el SKU padre."
+    },
+    {
+      "id": "QUOTE-014",
+      "description": "Sugerir bundles cuando las categorias seleccionadas satisfagan los requisitos",
+      "priority": 35,
+      "conditions": {
+        "bundle.requires_categories": "subset_of_selected_categories"
+      },
+      "action": {
+        "suggest_bundle": true,
+        "apply_discount_when_pricing_behavior_discount": true
+      },
+      "reason": "Los bundles pueden mejorar consistencia comercial o precio, pero no reemplazan el desglose por SKU."
+    }
+  ],
+  "knowledge_map": {
+    "access_point": ["knowledge/wireless-product-selection.md", "knowledge/licensing-notes.md"],
+    "switch": ["knowledge/switching-selection.md", "knowledge/compatibility-guidelines.md"],
+    "firewall": ["knowledge/edge-selection.md", "knowledge/licensing-notes.md"],
+    "budget_conflict": ["knowledge/vendor-guidance.md"],
+    "compatibility": ["knowledge/compatibility-guidelines.md"]
+  }
+}

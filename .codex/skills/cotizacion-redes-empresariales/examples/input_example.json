@@ -1,0 +1,23 @@
+{
+  "site_name": "Sede Norte",
+  "manufacturer_preference": "Cisco",
+  "budget_level": "medium",
+  "budget_usd": 25000,
+  "technical_design": {
+    "recommended_access_points": 6,
+    "recommended_access_switches": 2,
+    "required_switch_ports_with_reserve": 72,
+    "required_poe_ports_with_reserve": 40,
+    "effective_redundancy_level": "high",
+    "edge_category": "business_router_firewall",
+    "edge_router_firewall_count": 2,
+    "estimated_required_throughput_mbps": 850,
+    "environment": "corporate"
+  },
+  "needs": {
+    "wireless": true,
+    "switching": true,
+    "edge": true,
+    "support": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "handoff": {
+    "contract_version": "1.0",
+    "source_skill": "diseno-redes-empresariales",
+    "target_skill": "cotizacion-redes-empresariales",
+    "quote_ready_input": {
+      "site_name": "Sede corporativa multi-piso",
+      "budget_level": "medium",
+      "technical_design": {
+        "recommended_access_points": 16,
+        "recommended_access_switches": 3,
+        "required_switch_ports_with_reserve": 122,
+        "required_poe_ports_with_reserve": 74,
+        "effective_redundancy_level": "high",
+        "edge_category": "business_router_firewall",
+        "edge_router_firewall_count": 2,
+        "estimated_required_throughput_mbps": 892.18,
+        "environment": "corporate"
+      },
+      "needs": {
+        "wireless": true,
+        "switching": true,
+        "edge": true
+      }
+    },
+    "validation": {
+      "contract_version": "1.0",
+      "valid": true,
+      "active_needs": {
+        "wireless": true,
+        "switching": true,
+        "edge": true
+      },
+      "missing_required_fields": [],
+      "always_required_fields": [
+        "site_name"
+      ],
+      "required_fields_by_need": {
+        "wireless": [
+          "technical_design.recommended_access_points"
+        ],
+        "switching": [
+          "technical_design.recommended_access_switches",
+          "technical_design.required_switch_ports_with_reserve",
+          "technical_design.required_poe_ports_with_reserve"
+        ],
+        "edge": [
+          "technical_design.edge_category",
+          "technical_design.estimated_required_throughput_mbps"
+        ]
+      },
+      "optional_fields": [
+        "manufacturer_preference",
+        "budget_level",
+        "budget_usd",
+        "technical_design.effective_redundancy_level",
+        "technical_design.edge_router_firewall_count",
+        "technical_design.environment",
+        "needs.support"
+      ],
+      "rule": "Si el skill anterior lo sabe: lo envía. Si no lo sabe: se omite."
+    }
+  }
+}

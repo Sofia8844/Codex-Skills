@@ -1,0 +1,7 @@
+interface:
+  display_name: "Diseno de Redes Empresariales"
+  short_description: "Diseno de red empresarial explicable"
+  default_prompt: "Use $diseno-redes-empresariales to analyze this enterprise network requirement and produce an explainable technical recommendation."
+
+policy:
+  allow_implicit_invocation: true

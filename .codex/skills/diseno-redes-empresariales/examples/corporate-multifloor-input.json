@@ -1,0 +1,17 @@
+{
+  "site_name": "Sede corporativa multi-piso",
+  "environment": "corporate",
+  "devices": {
+    "laptops": 90,
+    "mobiles": 60,
+    "iot": 30,
+    "phones": 45
+  },
+  "traffic_profile": "high",
+  "floors": 3,
+  "area_m2": 1800,
+  "redundancy_required": "high",
+  "budget_level": "medium",
+  "manufacturers": ["Cisco", "Ubiquiti"],
+  "critical_services": ["voice", "video"]
+}

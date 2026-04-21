@@ -1,0 +1,99 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 1819 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+50 760 Td
+(Network Design Explanation) Tj
+T*
+() Tj
+T*
+(Sitio: Sede corporativa multi-piso) Tj
+T*
+() Tj
+T*
+(Decision recomendada) Tj
+T*
+(Recommend 16 APs, 3 access switches, 2 business_router_firewall edge device\(s\), and 6 VLANs.) Tj
+T*
+() Tj
+T*
+(Calculos clave) Tj
+T*
+(- Dispositivos totales: 225) Tj
+T*
+(- Clientes concurrentes estimados: 180.0) Tj
+T*
+(- Throughput requerido estimado: 892.18 Mbps) Tj
+T*
+(- Wi-Fi: 16 APs \(capacidad 4, cobertura 16, minimo por piso 3\)) Tj
+T*
+(- Switching: 3 switches de acceso, 122 puertos totales con reserva, 74 puertos PoE con reserva) Tj
+T*
+(- Edge: 2 equipo\(s\) categoria business_router_firewall para 892.18 Mbps) Tj
+T*
+(- Segmentacion: collaboration, corporate, guest, iot, management, voice) Tj
+T*
+() Tj
+T*
+(Reglas aplicadas) Tj
+T*
+(- WIFI-001: APs sized by concurrent wireless client capacity.) Tj
+T*
+(- WIFI-002: APs sized by adjusted RF coverage area.) Tj
+T*
+(- WIFI-003: AP count must satisfy minimum distribution per floor.) Tj
+T*
+(- EDGE-001: Selected smallest edge tier that satisfies client and throughput demand.) Tj
+T*
+(- SW-001: Access switch count includes wired endpoints, AP uplinks and reserve.) Tj
+T*
+(- SW-002: Multiple VLANs require Layer 3 gateway design at core/distribution.) Tj
+T*
+(- SEG-001: Base segmentation separates management, corporate and guest traffic.) Tj
+T*
+(- SEG-002: Dedicated VLANs isolate device classes with different risk and traffic behavior.) Tj
+T*
+(- SEG-003: Critical services need restricted policy and QoS-aware segmentation.) Tj
+T*
+(- RED-001: Availability design derived from effective redundancy level.) Tj
+T*
+(- QOS-001: Traffic profile or critical services require QoS policy.) Tj
+T*
+() Tj
+T*
+(Restricciones y supuestos) Tj
+T*
+(- Sin restricciones criticas.) Tj
+T*
+(- Sin supuestos adicionales.) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000185 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2182
+%%EOF

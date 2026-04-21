@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Export deterministic JSON and PDF outputs for the quote skill."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+from typing import Any, Dict
+
+
+SKILL_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[4]
+SHARED_NETWORK_DIR = REPO_ROOT / ".codex" / "shared" / "network"
+
+if str(SHARED_NETWORK_DIR) not in sys.path:
+    sys.path.insert(0, str(SHARED_NETWORK_DIR))
+
+from json_io import ensure_output_dir, load_json, write_json
+from pdf_export import write_pdf
+
+import quote_engine
+
+
+JSON_FILENAME = "network_quote_output.json"
+PDF_FILENAME = "network_quote_explanation.pdf"
+
+
+def export_outputs(source_input: Dict[str, Any], result: Dict[str, Any], output_dir: str | None = None) -> Dict[str, Any]:
+    """Generate JSON and PDF artifacts for quote outputs."""
+    explanation = quote_engine.build_quote_explanation(source_input, result)
+    output_payload = quote_engine.build_quote_output_payload(source_input, result)
+    output_path = ensure_output_dir(SKILL_ROOT, output_dir)
+    json_path = output_path / JSON_FILENAME
+    pdf_path = output_path / PDF_FILENAME
+
+    write_json(json_path, output_payload)
+    write_pdf(pdf_path, "Network Quote Explanation", explanation)
+
+    return {
+        "status": result.get("status"),
+        "json_path": str(json_path),
+        "pdf_path": str(pdf_path),
+        "output": output_payload,
+        "explanation": explanation,
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Export quote JSON and PDF artifacts.")
+    parser.add_argument("--input", required=True, help="Path to structured quote input JSON.")
+    parser.add_argument("--catalog-dir", default=str(quote_engine.DEFAULT_CATALOG), help="Directory containing catalog JSON files.")
+    parser.add_argument("--rules", default=str(quote_engine.DEFAULT_RULES), help="Path to quote_rules.json.")
+    parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to skill output/.")
+    parser.add_argument("--pretty", action="store_true", help="Pretty-print the JSON summary to stdout.")
+    args = parser.parse_args()
+
+    source_input = load_json(Path(args.input))
+    result = quote_engine.evaluate(
+        source_input,
+        quote_engine.load_catalog(Path(args.catalog_dir)),
+        load_json(Path(args.rules)),
+    )
+    exported = export_outputs(source_input, result, args.output_dir)
+    print(json.dumps(exported, indent=2 if args.pretty else None, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

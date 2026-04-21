@@ -1,0 +1,19 @@
+{
+  "site_name": "Planta industrial",
+  "environment": "industrial",
+  "devices": {
+    "laptops": 35,
+    "mobiles": 20,
+    "iot": 160,
+    "cameras": 42,
+    "phones": 20
+  },
+  "traffic_profile": "critical",
+  "floors": 1,
+  "area_m2": 3600,
+  "redundancy_required": "mission_critical",
+  "budget_level": "high",
+  "budget_usd": 85000,
+  "manufacturers": ["Fortinet", "Cisco"],
+  "critical_services": ["ot_control", "security", "voice"]
+}

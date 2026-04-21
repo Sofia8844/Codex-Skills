@@ -1,0 +1,396 @@
+{
+  "output_contract_version": "1.0",
+  "source_input_type": "handoff",
+  "input_contract_validation": {
+    "contract_version": "1.0",
+    "valid": true,
+    "active_needs": {
+      "wireless": true,
+      "switching": true,
+      "edge": true,
+      "support": true
+    },
+    "missing_required_fields": [],
+    "always_required_fields": [
+      "site_name"
+    ],
+    "required_fields_by_need": {
+      "wireless": [
+        "technical_design.recommended_access_points"
+      ],
+      "switching": [
+        "technical_design.recommended_access_switches",
+        "technical_design.required_switch_ports_with_reserve",
+        "technical_design.required_poe_ports_with_reserve"
+      ],
+      "edge": [
+        "technical_design.edge_category",
+        "technical_design.estimated_required_throughput_mbps"
+      ]
+    },
+    "optional_fields": [
+      "manufacturer_preference",
+      "budget_level",
+      "budget_usd",
+      "technical_design.effective_redundancy_level",
+      "technical_design.edge_router_firewall_count",
+      "technical_design.environment",
+      "needs.support"
+    ],
+    "rule": "Si el skill anterior lo sabe: lo envía. Si no lo sabe: se omite."
+  },
+  "status": "ok",
+  "site_name": "Sede Norte",
+  "contract_validation": {
+    "contract_version": "1.0",
+    "valid": true,
+    "active_needs": {
+      "wireless": true,
+      "switching": true,
+      "edge": true,
+      "support": true
+    },
+    "missing_required_fields": [],
+    "always_required_fields": [
+      "site_name"
+    ],
+    "required_fields_by_need": {
+      "wireless": [
+        "technical_design.recommended_access_points"
+      ],
+      "switching": [
+        "technical_design.recommended_access_switches",
+        "technical_design.required_switch_ports_with_reserve",
+        "technical_design.required_poe_ports_with_reserve"
+      ],
+      "edge": [
+        "technical_design.edge_category",
+        "technical_design.estimated_required_throughput_mbps"
+      ]
+    },
+    "optional_fields": [
+      "manufacturer_preference",
+      "budget_level",
+      "budget_usd",
+      "technical_design.effective_redundancy_level",
+      "technical_design.edge_router_firewall_count",
+      "technical_design.environment",
+      "needs.support"
+    ],
+    "rule": "Si el skill anterior lo sabe: lo envía. Si no lo sabe: se omite."
+  },
+  "recommendation": {
+    "selected_products": [
+      {
+        "sku": "MR36-HW",
+        "manufacturer": "Cisco",
+        "family": "Meraki MR",
+        "category": "access_point",
+        "subcategory": "cloud_wifi6",
+        "name": "Cisco Meraki MR36",
+        "quantity": 6,
+        "unit_price": 690.0,
+        "total_price": 4140.0,
+        "currency": "USD",
+        "selection_reason": "Uses AP quantity from technical design (6). Selected active Cisco Meraki MR model. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium."
+      },
+      {
+        "sku": "C9200L-48P-4G-E",
+        "manufacturer": "Cisco",
+        "family": "Catalyst 9200L",
+        "category": "switch",
+        "subcategory": "access_poe",
+        "name": "Cisco Catalyst 9200L 48-port PoE+",
+        "quantity": 2,
+        "unit_price": 3400.0,
+        "total_price": 6800.0,
+        "currency": "USD",
+        "selection_reason": "Uses switch quantity from technical design (2). Requires at least 36 ports and 20 PoE ports per switch. Selected C9200L-48P-4G-E with 48 ports. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium. Supports stacking for redundant access design."
+      },
+      {
+        "sku": "MX85-HW",
+        "manufacturer": "Cisco",
+        "family": "Meraki MX",
+        "category": "firewall",
+        "subcategory": "cloud_managed_security_appliance",
+        "name": "Cisco Meraki MX85",
+        "quantity": 2,
+        "unit_price": 3200.0,
+        "total_price": 6400.0,
+        "currency": "USD",
+        "selection_reason": "Requires throughput >= 850 Mbps. Selected MX85-HW with 1000 Mbps catalog throughput. Quantity 2 follows redundancy level high. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium."
+      }
+    ],
+    "related_items": [
+      {
+        "sku": "MR-ENT-3Y",
+        "manufacturer": "Cisco",
+        "family": "Meraki MR",
+        "category": "license",
+        "subcategory": "cloud_wireless",
+        "name": "Meraki MR Enterprise License 3Y",
+        "quantity": 6,
+        "unit_price": 300.0,
+        "total_price": 1800.0,
+        "currency": "USD",
+        "selection_reason": "License required by MR36-HW.",
+        "selection_reasons": [
+          "License required by MR36-HW."
+        ]
+      },
+      {
+        "sku": "AIR-AP-BRACKET-1",
+        "manufacturer": "Cisco",
+        "family": "Aironet Mounting",
+        "category": "accessory",
+        "subcategory": "mounting",
+        "name": "Cisco AP Low Profile Mounting Bracket",
+        "quantity": 6,
+        "unit_price": 20.0,
+        "total_price": 120.0,
+        "currency": "USD",
+        "selection_reason": "Accessory required for MR36-HW.",
+        "selection_reasons": [
+          "Accessory required for MR36-HW."
+        ]
+      },
+      {
+        "sku": "DNA-E-3Y",
+        "manufacturer": "Cisco",
+        "family": "Cisco DNA",
+        "category": "license",
+        "subcategory": "switching_essentials",
+        "name": "Cisco DNA Essentials Switching 3Y",
+        "quantity": 2,
+        "unit_price": 450.0,
+        "total_price": 900.0,
+        "currency": "USD",
+        "selection_reason": "License required by C9200L-48P-4G-E.",
+        "selection_reasons": [
+          "License required by C9200L-48P-4G-E."
+        ]
+      },
+      {
+        "sku": "SNTC-8X5-C9200L-48P",
+        "manufacturer": "Cisco",
+        "family": "Smart Net Total Care",
+        "category": "support",
+        "subcategory": "switching_8x5",
+        "name": "Cisco SNTC 8x5 Catalyst 9200L 48P 3Y",
+        "quantity": 2,
+        "unit_price": 390.0,
+        "total_price": 780.0,
+        "currency": "USD",
+        "selection_reason": "Support added for C9200L-48P-4G-E.",
+        "selection_reasons": [
+          "Support added for C9200L-48P-4G-E."
+        ]
+      },
+      {
+        "sku": "CAB-STK-E-0.5M",
+        "manufacturer": "Cisco",
+        "family": "Catalyst StackWise",
+        "category": "accessory",
+        "subcategory": "stacking_cable",
+        "name": "Cisco StackWise Ethernet Cable 0.5m",
+        "quantity": 1,
+        "unit_price": 95.0,
+        "total_price": 95.0,
+        "currency": "USD",
+        "selection_reason": "Accessory required for C9200L-48P-4G-E.",
+        "selection_reasons": [
+          "Accessory required for C9200L-48P-4G-E."
+        ]
+      },
+      {
+        "sku": "GLC-TE",
+        "manufacturer": "Cisco",
+        "family": "SFP",
+        "category": "accessory",
+        "subcategory": "transceiver",
+        "name": "Cisco 1000BASE-T SFP",
+        "quantity": 4,
+        "unit_price": 180.0,
+        "total_price": 720.0,
+        "currency": "USD",
+        "selection_reason": "Accessory required for C9200L-48P-4G-E.",
+        "selection_reasons": [
+          "Accessory required for C9200L-48P-4G-E."
+        ]
+      },
+      {
+        "sku": "LIC-MX85-SEC-3Y",
+        "manufacturer": "Cisco",
+        "family": "Meraki MX",
+        "category": "license",
+        "subcategory": "cloud_security_subscription",
+        "name": "Meraki MX85 Advanced Security 3Y",
+        "quantity": 2,
+        "unit_price": 2300.0,
+        "total_price": 4600.0,
+        "currency": "USD",
+        "selection_reason": "License required by MX85-HW.",
+        "selection_reasons": [
+          "License required by MX85-HW."
+        ]
+      }
+    ],
+    "suggested_bundles": [
+      {
+        "bundle_id": "BNDL-CISCO-CORP-WIFI",
+        "manufacturer": "Cisco",
+        "name": "Cisco Corporate Wireless Bundle",
+        "pricing_behavior": "informational",
+        "discount_percent": 0,
+        "estimated_discount": 0.0,
+        "reason": "Selected categories satisfy bundle requirements."
+      },
+      {
+        "bundle_id": "BNDL-CISCO-CORP-LAN",
+        "manufacturer": "Cisco",
+        "name": "Cisco Corporate LAN Bundle",
+        "pricing_behavior": "informational",
+        "discount_percent": 0,
+        "estimated_discount": 0.0,
+        "reason": "Selected categories satisfy bundle requirements."
+      },
+      {
+        "bundle_id": "BNDL-CISCO-CORP-EDGE",
+        "manufacturer": "Cisco",
+        "name": "Cisco Corporate Edge Bundle",
+        "pricing_behavior": "informational",
+        "discount_percent": 0,
+        "estimated_discount": 0.0,
+        "reason": "Selected categories satisfy bundle requirements."
+      },
+      {
+        "bundle_id": "BNDL-MERAKI-BRANCH",
+        "manufacturer": "Cisco",
+        "name": "Meraki Cloud Branch Bundle",
+        "pricing_behavior": "informational",
+        "discount_percent": 0,
+        "estimated_discount": 0.0,
+        "reason": "Selected categories satisfy bundle requirements."
+      }
+    ]
+  },
+  "discarded_products": [
+    {
+      "sku": "WS-C2960X-48FPS-L",
+      "category": "switch",
+      "reason": "Excluded because status is eos.",
+      "rule_id": "QUOTE-001",
+      "replacement_sku": "C9200L-48P-4G-E"
+    }
+  ],
+  "applied_rules": [
+    {
+      "id": "QUOTE-001",
+      "effect": "Excluded non-active APs before selection."
+    },
+    {
+      "id": "QUOTE-002",
+      "effect": "Applied manufacturer preference as soft criterion."
+    },
+    {
+      "id": "QUOTE-003",
+      "effect": "Selected AP model from catalog using environment and budget fit."
+    },
+    {
+      "id": "QUOTE-001",
+      "effect": "Excluded non-active switches before selection."
+    },
+    {
+      "id": "QUOTE-002",
+      "effect": "Applied manufacturer preference as soft criterion."
+    },
+    {
+      "id": "QUOTE-004",
+      "effect": "Selected switch by required ports and PoE per switch."
+    },
+    {
+      "id": "QUOTE-001",
+      "effect": "Excluded non-active firewalls before selection."
+    },
+    {
+      "id": "QUOTE-002",
+      "effect": "Applied manufacturer preference as soft criterion."
+    },
+    {
+      "id": "QUOTE-005",
+      "effect": "Selected firewall by edge category and throughput."
+    },
+    {
+      "id": "QUOTE-010",
+      "effect": "Set edge quantity minimum to 2 and required HA-capable product."
+    },
+    {
+      "id": "QUOTE-007",
+      "effect": "Included license dependencies for MR36-HW."
+    },
+    {
+      "id": "QUOTE-008",
+      "effect": "Included support dependencies for MR36-HW."
+    },
+    {
+      "id": "QUOTE-009",
+      "effect": "Evaluated required accessories for MR36-HW."
+    },
+    {
+      "id": "QUOTE-007",
+      "effect": "Included license dependencies for C9200L-48P-4G-E."
+    },
+    {
+      "id": "QUOTE-008",
+      "effect": "Included support dependencies for C9200L-48P-4G-E."
+    },
+    {
+      "id": "QUOTE-009",
+      "effect": "Evaluated required accessories for C9200L-48P-4G-E."
+    },
+    {
+      "id": "QUOTE-007",
+      "effect": "Included license dependencies for MX85-HW."
+    },
+    {
+      "id": "QUOTE-008",
+      "effect": "Included support dependencies for MX85-HW."
+    },
+    {
+      "id": "QUOTE-014",
+      "effect": "Suggested bundles whose required categories are present."
+    },
+    {
+      "id": "QUOTE-011",
+      "effect": "Detected numeric budget conflict."
+    }
+  ],
+  "technical_reasons": [
+    "Uses AP quantity from technical design (6). Selected active Cisco Meraki MR model. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium.",
+    "Uses switch quantity from technical design (2). Requires at least 36 ports and 20 PoE ports per switch. Selected C9200L-48P-4G-E with 48 ports. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium. Supports stacking for redundant access design.",
+    "Requires throughput >= 850 Mbps. Selected MX85-HW with 1000 Mbps catalog throughput. Quantity 2 follows redundancy level high. Matches preferred manufacturer. Fits environment corporate. Fits budget level medium."
+  ],
+  "constraints": [
+    {
+      "id": "BUDGET-001",
+      "severity": "high",
+      "message": "Budget 25000 USD is below estimated subtotal 26355 USD."
+    }
+  ],
+  "warnings": [],
+  "missing_information": [],
+  "estimated_total": {
+    "currency": "USD",
+    "hardware_subtotal": 17340.0,
+    "related_items_subtotal": 9015.0,
+    "bundle_discount": 0.0,
+    "subtotal": 26355.0
+  },
+  "knowledge_suggestions": [
+    "knowledge/wireless-product-selection.md",
+    "knowledge/licensing-notes.md",
+    "knowledge/switching-selection.md",
+    "knowledge/compatibility-guidelines.md",
+    "knowledge/edge-selection.md"
+  ]
+}

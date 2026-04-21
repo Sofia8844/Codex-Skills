@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "network-design-to-quote/handoff.schema.json",
+  "title": "Network Design To Quote Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["handoff"],
+  "properties": {
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "source_skill",
+        "target_skill",
+        "quote_ready_input"
+      ],
+      "properties": {
+        "contract_version": {
+          "type": "string",
+          "const": "1.0"
+        },
+        "source_skill": {
+          "type": "string",
+          "const": "diseno-redes-empresariales"
+        },
+        "target_skill": {
+          "type": "string",
+          "const": "cotizacion-redes-empresariales"
+        },
+        "quote_ready_input": {
+          "$ref": "#/$defs/quoteReadyInput"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "quoteReadyInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["site_name"],
+      "properties": {
+        "site_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manufacturer_preference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budget_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "budget_usd": {
+          "type": "number"
+        },
+        "technical_design": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "recommended_access_points": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "recommended_access_switches": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required_switch_ports_with_reserve": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required_poe_ports_with_reserve": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "effective_redundancy_level": {
+              "type": "string",
+              "enum": ["false", "basic", "high", "mission_critical"]
+            },
+            "edge_category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "edge_router_firewall_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "estimated_required_throughput_mbps": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "environment": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "needs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wireless": {
+              "type": "boolean"
+            },
+            "switching": {
+              "type": "boolean"
+            },
+            "edge": {
+              "type": "boolean"
+            },
+            "support": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}
