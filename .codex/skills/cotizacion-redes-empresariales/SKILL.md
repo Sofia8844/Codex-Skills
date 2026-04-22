@@ -124,10 +124,13 @@ python .codex/skills/cotizacion-redes-empresariales/src/export_quote_outputs.py 
 
 ## Archivos De Salida
 
-Nombres estables y predecibles en `output/`:
+Por defecto, los artefactos se generan en `analysis_output/<site_name>/`.
+Si se pasa `--output-dir`, se respeta esa ruta explicita.
 
-- `output/network_quote_output.json`
-- `output/network_quote_explanation.pdf`
+Nombres estables y predecibles:
+
+- `network_quote_output.json`
+- `network_quote_explanation.pdf`
 
 ## Manejo De Ambiguedad
 

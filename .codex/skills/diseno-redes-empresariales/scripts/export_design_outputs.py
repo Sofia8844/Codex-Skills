@@ -25,7 +25,7 @@ SHARED_NETWORK_DIR = REPO_ROOT / ".codex" / "shared" / "network"
 if str(SHARED_NETWORK_DIR) not in sys.path:
     sys.path.insert(0, str(SHARED_NETWORK_DIR))
 
-from json_io import ensure_output_dir, load_json, write_json
+from json_io import ensure_case_output_dir, load_json, write_json
 from pdf_export import write_pdf
 
 import evaluate_network_design as evaluator
@@ -33,8 +33,6 @@ import evaluate_network_design as evaluator
 
 HANDOFF_FILENAME = "network_design_handoff.json"
 PDF_FILENAME = "network_design_explanation.pdf"
-
-
 def export_outputs(
     source_input: Dict[str, Any],
     result: Dict[str, Any],
@@ -62,7 +60,8 @@ def export_outputs(
     # Convierte el resultado tecnico al contrato desacoplado que consumira
     # el skill de cotizacion.
     handoff_payload = evaluator.build_design_handoff_payload(source_input, result)
-    output_path = ensure_output_dir(SKILL_ROOT, output_dir)
+    case_name = source_input.get("site_name")
+    output_path = ensure_case_output_dir(REPO_ROOT, case_name, output_dir)
     handoff_path = output_path / HANDOFF_FILENAME
     pdf_path = output_path / PDF_FILENAME
 
@@ -84,7 +83,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Export handoff JSON and PDF for a network design.")
     parser.add_argument("--input", required=True, help="Path to structured network design input JSON.")
     parser.add_argument("--rules", default=str(evaluator.DEFAULT_RULES), help="Path to technical_rules.json.")
-    parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to skill output/.")
+    parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to analysis_output/<site_name>/.")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print the JSON summary to stdout.")
     args = parser.parse_args()
 

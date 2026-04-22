@@ -26,7 +26,7 @@ SHARED_NETWORK_DIR = REPO_ROOT / ".codex" / "shared" / "network"
 if str(SHARED_NETWORK_DIR) not in sys.path:
     sys.path.insert(0, str(SHARED_NETWORK_DIR))
 
-from json_io import ensure_output_dir, load_json, write_json
+from json_io import ensure_case_output_dir, load_json, write_json
 from pdf_export import write_pdf
 
 import quote_engine
@@ -51,7 +51,8 @@ def export_outputs(source_input: Dict[str, Any], result: Dict[str, Any], output_
     explanation = quote_engine.build_quote_explanation(source_input, result)
     # Este payload representa la salida formal del skill de cotizacion.
     output_payload = quote_engine.build_quote_output_payload(source_input, result)
-    output_path = ensure_output_dir(SKILL_ROOT, output_dir)
+    case_name = result.get("site_name") or source_input.get("site_name")
+    output_path = ensure_case_output_dir(REPO_ROOT, case_name, output_dir)
     json_path = output_path / JSON_FILENAME
     pdf_path = output_path / PDF_FILENAME
 
@@ -74,7 +75,7 @@ def main() -> None:
     parser.add_argument("--input", required=True, help="Path to structured quote input JSON.")
     parser.add_argument("--catalog-dir", default=str(quote_engine.DEFAULT_CATALOG), help="Directory containing catalog JSON files.")
     parser.add_argument("--rules", default=str(quote_engine.DEFAULT_RULES), help="Path to quote_rules.json.")
-    parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to skill output/.")
+    parser.add_argument("--output-dir", default=None, help="Optional output directory. Defaults to analysis_output/<site_name>/.")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print the JSON summary to stdout.")
     args = parser.parse_args()
 
