@@ -1,4 +1,4 @@
-"""Minimal PDF export helper for text-based skill outputs."""
+"""Helper minimo para exportar texto plano a PDF."""
 
 from __future__ import annotations
 
@@ -8,10 +8,12 @@ from typing import List
 
 
 def _escape(text: str) -> str:
+    """Escapa caracteres especiales para que el texto sea valido en PDF."""
     return text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
 def _wrap_lines(text: str, width: int = 94) -> List[str]:
+    """Parte el texto en lineas manejables para el renderizado del PDF."""
     wrapped: List[str] = []
     for raw_line in text.splitlines():
         if not raw_line.strip():
@@ -22,7 +24,7 @@ def _wrap_lines(text: str, width: int = 94) -> List[str]:
 
 
 def build_pdf_bytes(title: str, text: str) -> bytes:
-    """Build a simple multi-page PDF using Helvetica."""
+    """Construye un PDF simple de varias paginas usando la fuente Helvetica."""
     lines = [title, ""] + _wrap_lines(text)
     lines_per_page = 46
     pages = [
@@ -37,6 +39,7 @@ def build_pdf_bytes(title: str, text: str) -> bytes:
 
     page_refs: List[str] = []
     for page_index, page_lines in enumerate(pages):
+        # Cada pagina tiene su propio objeto de contenido para simplificar el armado.
         page_obj_num = 4 + page_index * 2
         content_obj_num = page_obj_num + 1
         page_refs.append(f"{page_obj_num} 0 R")
@@ -66,6 +69,7 @@ def build_pdf_bytes(title: str, text: str) -> bytes:
         )
         objects.append(stream)
 
+    # Actualiza el arbol de paginas con todas las referencias creadas.
     objects[1] = (
         f"<< /Type /Pages /Kids [{' '.join(page_refs)}] /Count {len(page_refs)} >>"
     ).encode("latin-1")
@@ -93,5 +97,5 @@ def build_pdf_bytes(title: str, text: str) -> bytes:
 
 
 def write_pdf(path: Path, title: str, text: str) -> None:
-    """Write a simple text PDF to disk."""
+    """Genera el binario PDF y lo escribe a disco."""
     path.write_bytes(build_pdf_bytes(title, text))

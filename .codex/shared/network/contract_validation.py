@@ -1,4 +1,4 @@
-"""Shared validation helpers for the design-to-quote handoff contract."""
+"""Helpers compartidos para validar el contrato entre diseno y cotizacion."""
 
 from __future__ import annotations
 
@@ -35,10 +35,11 @@ OPTIONAL_FIELDS = [
 
 
 def prune_unknowns(value: Any) -> Any:
-    """Remove unknown values while preserving deterministic false and zero values."""
+    """Elimina valores desconocidos sin borrar `False` o `0` validos."""
     if isinstance(value, dict):
         cleaned: Dict[str, Any] = {}
         for key, nested_value in value.items():
+            # Limpia cada rama antes de decidir si debe conservarse.
             pruned = prune_unknowns(nested_value)
             if pruned is None:
                 continue
@@ -59,7 +60,7 @@ def prune_unknowns(value: Any) -> Any:
 
 
 def get_nested(data: Mapping[str, Any], dotted_path: str) -> Any:
-    """Read a nested value using dot notation."""
+    """Lee un valor anidado usando una ruta con puntos."""
     current: Any = data
     for part in dotted_path.split("."):
         if not isinstance(current, Mapping):
@@ -69,7 +70,7 @@ def get_nested(data: Mapping[str, Any], dotted_path: str) -> Any:
 
 
 def infer_active_needs(data: Mapping[str, Any]) -> Dict[str, bool]:
-    """Resolve active scopes from explicit needs or known technical design fields."""
+    """Determina el alcance activo a partir de `needs` o de campos tecnicos presentes."""
     technical_design = data.get("technical_design")
     technical_design = technical_design if isinstance(technical_design, Mapping) else {}
     raw_needs = data.get("needs")
@@ -81,6 +82,7 @@ def infer_active_needs(data: Mapping[str, Any]) -> Dict[str, bool]:
         if isinstance(value, bool):
             active[need] = value
 
+    # Si `needs` no llega completo, inferimos el alcance desde el contenido tecnico.
     inferred_checks = {
         "wireless": technical_design.get("recommended_access_points") is not None,
         "switching": any(
@@ -109,7 +111,7 @@ def infer_active_needs(data: Mapping[str, Any]) -> Dict[str, bool]:
 
 
 def determine_missing_required_fields(data: Mapping[str, Any]) -> List[str]:
-    """Return missing required fields according to the active scope."""
+    """Devuelve los campos requeridos faltantes segun el alcance activo."""
     missing: List[str] = []
     if not data.get("site_name"):
         missing.append("site_name")
@@ -125,7 +127,7 @@ def determine_missing_required_fields(data: Mapping[str, Any]) -> List[str]:
 
 
 def validate_quote_ready_input(data: Mapping[str, Any]) -> Dict[str, Any]:
-    """Validate the quote-ready payload used as handoff between skills."""
+    """Valida el payload `quote_ready_input` y devuelve un resumen reutilizable."""
     active_needs = infer_active_needs(data)
     missing = determine_missing_required_fields(data)
     return {
@@ -136,12 +138,12 @@ def validate_quote_ready_input(data: Mapping[str, Any]) -> Dict[str, Any]:
         "always_required_fields": list(ALWAYS_REQUIRED_FIELDS),
         "required_fields_by_need": REQUIRED_FIELDS_BY_NEED,
         "optional_fields": list(OPTIONAL_FIELDS),
-        "rule": "Si el skill anterior lo sabe: lo envía. Si no lo sabe: se omite.",
+        "rule": "Si el skill anterior lo sabe: lo envia. Si no lo sabe: se omite.",
     }
 
 
 def extract_quote_ready_input(payload: Mapping[str, Any]) -> Dict[str, Any]:
-    """Accept direct input or a wrapper with handoff.quote_ready_input."""
+    """Extrae `quote_ready_input` desde input directo o desde un wrapper `handoff`."""
     handoff = payload.get("handoff")
     if isinstance(handoff, Mapping):
         quote_ready = handoff.get("quote_ready_input")
@@ -154,7 +156,7 @@ def extract_quote_ready_input(payload: Mapping[str, Any]) -> Dict[str, Any]:
 
 
 def wrap_handoff(quote_ready_input: Mapping[str, Any]) -> Dict[str, Any]:
-    """Build the canonical handoff wrapper."""
+    """Construye el wrapper canonico del handoff para el skill de cotizacion."""
     return {
         "handoff": {
             "contract_version": CONTRACT_VERSION,
