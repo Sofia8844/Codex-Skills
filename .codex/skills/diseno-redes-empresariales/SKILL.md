@@ -105,20 +105,32 @@ Opcionales pero recomendados:
    - `critical_services`: por ejemplo `voice`, `video`, `erp`, `pos`, `ot_control`, `security`.
 2. Si faltan datos criticos, pedirlos antes de recomendar. Datos criticos: cantidad de dispositivos o `devices`, perfil de trafico, y al menos `floors` o `area_m2`.
 3. Construir un JSON de entrada con claves canonicas en ingles.
-4. Ejecutar el evaluador solo cuando se necesite inspeccionar o depurar el calculo tecnico en consola. Este paso es opcional y no genera artefactos finales:
+4. Definir la carpeta de trabajo del caso. Por defecto debe ser `analysis_output/<site_name_slug>/`. Usar esa misma carpeta para el Markdown, el JSON de handoff y el PDF.
+5. Ejecutar el evaluador para obtener el resultado tecnico deterministico que alimentara la explicacion y el contrato:
 
 ```bash
 python .codex/skills/diseno-redes-empresariales/scripts/evaluate_network_design.py --input path/to/input.json --pretty
 ```
 
-5. Ejecutar el flujo operativo principal del skill con el exportador. Este es el paso que debe usarse para generar artefactos reales; el script vuelve a evaluar internamente y luego exporta handoff y PDF:
+6. Leer solo los documentos de `knowledge/` necesarios para explicar el resultado.
+7. Redactar una recomendacion estructurada basada en la salida del evaluador. No agregar cantidades o decisiones que no aparezcan en `decision`, `sizing`, `rules_applied`, `constraints` o `technical_reasons`.
+8. Antes de ejecutar `export_design_outputs.py`, guardar esa explicacion final visible en:
 
-```bash
-python .codex/skills/diseno-redes-empresariales/scripts/export_design_outputs.py --input path/to/input.json --pretty
+```text
+analysis_output/<site_name_slug>/network_design_explanation.md
 ```
 
-6. Leer solo los documentos de `knowledge/` necesarios para explicar el resultado.
-7. Redactar una recomendacion estructurada basada en la salida del script. No agregar cantidades o decisiones que no aparezcan en `decision`, `sizing`, `rules_applied`, `constraints` o `technical_reasons`.
+9. Ejecutar el flujo operativo principal del skill con el exportador. Este script vuelve a evaluar internamente para construir el handoff, detecta `network_design_explanation.md` en la carpeta del caso y genera el PDF desde ese mismo texto:
+
+```bash
+python .codex/skills/diseno-redes-empresariales/scripts/export_design_outputs.py --input path/to/input.json --output-dir analysis_output/<site_name_slug> --pretty
+```
+
+Si ya existe una explicacion final visible en Markdown y se quiere forzar una ruta concreta, el exportador tambien acepta:
+
+```bash
+python .codex/skills/diseno-redes-empresariales/scripts/export_design_outputs.py --input path/to/input.json --explanation-file path/to/network_design_explanation.md --pretty
+```
 
 ## Flujo Actual Del Skill
 
@@ -130,6 +142,7 @@ Hoy el flujo operativo real es este:
 4. El motor devuelve el resultado tecnico deterministico.
 5. El exportador genera:
    - `network_design_handoff.json`
+   - `network_design_explanation.md`
    - `network_design_explanation.pdf`
 
 Importante:
@@ -267,9 +280,11 @@ Si se pasa `--output-dir`, se respeta esa ruta explicita.
 Nombres estables y predecibles:
 
 - `network_design_handoff.json`
+- `network_design_explanation.md`
 - `network_design_explanation.pdf`
 
 El skill no debe emitir `network_design_handoff.json` si el contrato queda invalido.
+Si existe `network_design_explanation.md`, el PDF debe generarse desde ese mismo texto visible.
 
 ## Reglas De Rigor
 
