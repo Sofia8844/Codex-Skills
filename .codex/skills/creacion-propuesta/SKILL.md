@@ -23,6 +23,77 @@ description: Cree o complete propuestas económicas basadas en diapositivas a pa
 - Incorporar logos que vengan en los archivos del usuario o en `./assets/logos/` cuando el usuario pida agregarlos.
 - Si el usuario no define formato de salida, entregar primero un esquema editable y luego materializar el `.pptx` si hay plantilla PowerPoint disponible.
 
+## Integracion Con Otros Skills
+
+Este skill ahora puede aceptar, ademas del flujo actual, informacion estructurada proveniente de:
+
+- `diseno-redes-empresariales`
+- `cotizacion-redes-empresariales`
+
+Inputs soportados:
+
+- `design_handoff`
+- `quote_output`
+
+El skill debe detectar automaticamente estos JSON si el usuario los adjunta o si entrega rutas a archivos ya generados en el workspace.
+
+Reglas de integracion:
+
+- No recalcular diseno.
+- No recalcular cotizacion.
+- No modificar cantidades.
+- No modificar precios.
+- Solo transformar, resumir y presentar.
+
+Si falta informacion:
+
+- usar placeholders visibles
+- o pedir el dato faltante si es critico para la propuesta
+- nunca inventar datos
+
+Mapeo desde `design_handoff.handoff.quote_ready_input`:
+
+- `site_name`
+- `manufacturer_preference`
+- `technical_design.recommended_access_points`
+- `technical_design.recommended_access_switches`
+- `technical_design.edge_router_firewall_count`
+- `technical_design.effective_redundancy_level`
+- `technical_design.environment`
+
+Estas claves deben alimentar:
+
+- resumen tecnico
+- solucion propuesta
+- arquitectura tecnologica
+
+Mapeo desde `quote_output`:
+
+- `recommendation.selected_products`
+- `recommendation.related_items`
+- `estimated_total`
+- `constraints`
+- `warnings`
+- `technical_reasons`
+
+Estas claves deben alimentar:
+
+- propuesta economica
+- notas comerciales
+- justificacion tecnica
+- riesgos, advertencias o limitaciones
+
+Helper real de integracion:
+
+- `./scripts/integrate_network_skill_outputs.py`
+
+Ese helper:
+
+- detecta `design_handoff` y `quote_output`
+- consolida contexto en `proposal_network_context.json`
+- genera un `proposal_network_spec.json` reutilizable por `build_presentation.py`
+- preserva el comportamiento actual si esos JSON no existen
+
 ## Base obligatoria
 
 - Preferir una plantilla PowerPoint real cuando exista.
@@ -68,6 +139,8 @@ description: Cree o complete propuestas económicas basadas en diapositivas a pa
 ## Flujo principal
 
 - Inspeccionar primero la presentacion base para identificar que diapositivas son corporativas, cuales son comerciales y cuales sirven como reserva para contenido extra.
+- Si el usuario entrega `design_handoff` o `quote_output`, ejecutar primero `./scripts/integrate_network_skill_outputs.py` para consolidar contexto reutilizable antes de redactar o construir el spec final.
+- Si ambos JSON existen, usarlos para autocompletar resumen ejecutivo, solucion propuesta, arquitectura y propuesta economica sin pedir al usuario los mismos datos otra vez.
 - Completar primero los campos editables obligatorios: cliente, proyecto, contexto, objetivo, solucion, cronograma, costos y condiciones.
 - Enriquecer la propuesta con informacion relevante encontrada en PDFs y archivos de referencia, sin inventar datos.
 - Si la consulta menciona productos, soluciones o servicios, correr primero una busqueda local en PDFs con `./scripts/pdf_reader.py search --query "<consulta>"` para ubicar paginas y snippets relevantes antes de sintetizar.
@@ -130,6 +203,8 @@ description: Cree o complete propuestas económicas basadas en diapositivas a pa
 ## Prioridad de fuentes
 
 - Dar prioridad a instrucciones explicitas del usuario sobre cualquier archivo.
+- Priorizar `quote_output` sobre `design_handoff` cuando ambos hablen del mismo contenido comercial.
+- Usar `design_handoff` para contexto tecnico cuando no exista un dato equivalente mas detallado en `quote_output`.
 - Usar la presentacion base como estructura visual y como fuente protegida de contenido corporativo.
 - Usar el mapa Markdown de la plantilla como esquema de placeholders y validacion del contenido esperado.
 - Usar el perfil de empresa por defecto solo para rellenar informacion institucional faltante, no para sobreescribir contenido corporativo ya aprobado.
@@ -207,6 +282,7 @@ description: Cree o complete propuestas económicas basadas en diapositivas a pa
 ## Builder propio
 
 - Usar `./build_presentation.py` como builder propio del skill cuando la salida final deba ser un `.pptx`.
+- Si existen `design_handoff` y/o `quote_output`, usar `./scripts/integrate_network_skill_outputs.py` antes de construir el `spec` final del builder.
 - Pasar por defecto `./assets/plantillas/Industrias Ariova.pptx` como template cuando el usuario no entregue otra plantilla para esa solicitud.
 - Dejar siempre la salida final dentro de `./output/`, aunque el spec proponga otra ruta fuera de esa carpeta.
 - Para solicitudes normales, construir con un spec transitorio enviado por `stdin` usando `build --spec -`.
@@ -260,6 +336,7 @@ description: Cree o complete propuestas económicas basadas en diapositivas a pa
   - resumir dentro de la capacidad visible del slide
   - o repartir el contenido en una slide de continuidad
 - Comandos de referencia:
+  - `python ./.codex/skills/creacion-propuesta/scripts/integrate_network_skill_outputs.py --design-handoff <network_design_handoff.json> --quote-output <network_quote_output.json> --output-dir ./.codex/skills/creacion-propuesta/output/red/ --pretty`
   - `python ./.codex/skills/creacion-propuesta/build_presentation.py inspect --template <plantilla.pptx>`
   - `python ./.codex/skills/creacion-propuesta/build_presentation.py build --spec <spec.json>`
   - `Get-Content <spec.json> | python ./.codex/skills/creacion-propuesta/build_presentation.py build --spec - --base-dir <repo>`
