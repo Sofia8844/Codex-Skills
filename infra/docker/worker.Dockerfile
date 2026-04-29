@@ -24,6 +24,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm install --omit=dev
 RUN npm install -g @openai/codex@0.116.0
+RUN apk add --no-cache python3
 
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/skills ./skills

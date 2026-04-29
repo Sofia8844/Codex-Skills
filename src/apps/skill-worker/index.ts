@@ -102,6 +102,19 @@ async function main() {
       return;
     }
 
+    logger.info("Worker picked job", {
+      jobId: runningJob.id,
+      skillName: runningJob.skillName,
+      requirementId: runningJob.requirementId,
+      requirementUuid: runningJob.requirementUuid,
+      workflowName: runningJob.workflowName,
+      workflowRunId: runningJob.workflowRunId,
+      workflowStepId: runningJob.workflowStepId,
+      stepName: runningJob.stepName,
+      caseRootDir: runningJob.caseRootDir,
+      outputDir: runningJob.outputDir,
+    });
+
     try {
       await workflowOrchestrator.handleJobStarted(runningJob);
 
@@ -123,6 +136,17 @@ async function main() {
           exitCode: result.exitCode,
         });
 
+        logger.info("Worker completed job", {
+          jobId: completedJob.id,
+          skillName: completedJob.skillName,
+          requirementId: completedJob.requirementId,
+          workflowRunId: completedJob.workflowRunId,
+          workflowStepId: completedJob.workflowStepId,
+          stepName: completedJob.stepName,
+          outputFile: completedJob.outputFile,
+          exitCode: completedJob.exitCode,
+        });
+
         await reconcileWorkflowIfNeeded(workflowOrchestrator, completedJob);
       } else {
         const failedJob = await jobsRepository.markFailed(runningJob.id, {
@@ -131,6 +155,18 @@ async function main() {
           outputFile: execution.outputFile ?? null,
           exitCode: result.exitCode,
           errorMessage: `Skill exited with code ${String(result.exitCode ?? "unknown")}.`,
+        });
+
+        logger.warn("Worker finished job with non-zero exit code", {
+          jobId: failedJob.id,
+          skillName: failedJob.skillName,
+          requirementId: failedJob.requirementId,
+          workflowRunId: failedJob.workflowRunId,
+          workflowStepId: failedJob.workflowStepId,
+          stepName: failedJob.stepName,
+          outputFile: failedJob.outputFile,
+          exitCode: failedJob.exitCode,
+          errorMessage: failedJob.errorMessage,
         });
 
         await reconcileWorkflowIfNeeded(workflowOrchestrator, failedJob);
@@ -149,10 +185,27 @@ async function main() {
         errorMessage,
       });
 
+      logger.error("Worker failed job while executing skill", {
+        jobId: failedJob.id,
+        skillName: failedJob.skillName,
+        requirementId: failedJob.requirementId,
+        workflowRunId: failedJob.workflowRunId,
+        workflowStepId: failedJob.workflowStepId,
+        stepName: failedJob.stepName,
+        errorMessage: failedJob.errorMessage,
+      });
+
       await reconcileWorkflowIfNeeded(workflowOrchestrator, failedJob);
     }
 
     await enqueueEmailNotification(runningJob.id);
+    logger.info("Worker queued email notification", {
+      jobId: runningJob.id,
+      requirementId: runningJob.requirementId,
+      workflowRunId: runningJob.workflowRunId,
+      workflowStepId: runningJob.workflowStepId,
+      stepName: runningJob.stepName,
+    });
     consumerChannel.ack(message);
   }
 

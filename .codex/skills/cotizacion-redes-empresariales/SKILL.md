@@ -106,21 +106,55 @@ Si un campo requerido falta para el alcance activo, debe devolver `needs_input` 
 
 1. Extraer o validar entrada estructurada a partir del contrato compartido.
 2. Preservar las cantidades tecnicas provenientes del skill previo.
-3. Ejecutar el motor:
+3. Definir la carpeta de trabajo del caso. Por defecto debe ser `analysis_output/<site_name_slug>/`. Usar esa misma carpeta para el Markdown, el JSON de salida y el PDF.
+4. Ejecutar el motor para obtener la seleccion comercial deterministica:
 
 ```bash
 python .codex/skills/cotizacion-redes-empresariales/src/quote_engine.py --input path/to/input.json --pretty
 ```
 
-4. Exportar JSON y PDF:
-
-```bash
-python .codex/skills/cotizacion-redes-empresariales/src/export_quote_outputs.py --input path/to/input.json --pretty
-```
-
 5. Revisar la salida: `selected_products`, `related_items`, `discarded_products`, `applied_rules`, `warnings`, `constraints`, `missing_information` y `estimated_total`.
 6. Leer solo los documentos de `knowledge/` que correspondan.
-7. Redactar la respuesta final sin inventar SKUs, precios ni compatibilidades fuera del catalogo.
+7. Redactar la explicacion comercial final visible sin inventar SKUs, precios ni compatibilidades fuera del catalogo.
+8. Antes de ejecutar `export_quote_outputs.py`, guardar esa explicacion final visible en:
+
+```text
+analysis_output/<site_name_slug>/network_quote_explanation.md
+```
+
+9. Exportar JSON y PDF. El exportador vuelve a ejecutar el motor, detecta `network_quote_explanation.md` en la carpeta del caso y genera el PDF desde ese mismo texto:
+
+```bash
+python .codex/skills/cotizacion-redes-empresariales/src/export_quote_outputs.py --input path/to/input.json --output-dir analysis_output/<site_name_slug> --pretty
+```
+
+Si ya existe una explicacion final visible en Markdown y se quiere forzar una ruta concreta, el exportador tambien acepta:
+
+```bash
+python .codex/skills/cotizacion-redes-empresariales/src/export_quote_outputs.py --input path/to/input.json --output-dir analysis_output/<site_name_slug> --explanation-file path/to/network_quote_explanation.md --pretty
+```
+
+## Comportamiento Del Exportador
+
+Cuando se ejecuta `export_quote_outputs.py`, su comportamiento tecnico es este:
+
+1. Carga el input estructurado.
+2. Llama internamente a `quote_engine.py`.
+3. Construye el JSON final de salida desde el resultado comercial.
+4. Busca `network_quote_explanation.md` en la carpeta del caso o usa el archivo indicado por `--explanation-file`.
+5. Si encuentra Markdown, genera el PDF desde ese texto visible.
+6. Si no encuentra Markdown, genera un Markdown y un PDF usando la explicacion base del motor como fallback.
+7. Genera:
+   - `network_quote_output.json`
+   - `network_quote_explanation.md`
+   - `network_quote_explanation.pdf`
+
+Importante:
+
+- `quote_engine.py` por si solo sirve para revisar la seleccion comercial en consola.
+- `export_quote_outputs.py` es el script principal para producir archivos reales.
+- En el flujo de Codex, la explicacion final rica debe guardarse antes de ejecutar el exportador.
+- Si se ejecuta el exportador sin Markdown previo, el PDF usara el fallback deterministico y no la explicacion inteligente de Codex.
 
 ## Archivos De Salida
 
@@ -130,7 +164,10 @@ Si se pasa `--output-dir`, se respeta esa ruta explicita.
 Nombres estables y predecibles:
 
 - `network_quote_output.json`
+- `network_quote_explanation.md`
 - `network_quote_explanation.pdf`
+
+Si existe `network_quote_explanation.md`, el PDF debe generarse desde ese mismo texto visible.
 
 ## Manejo De Ambiguedad
 

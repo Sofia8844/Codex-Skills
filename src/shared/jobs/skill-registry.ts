@@ -147,9 +147,9 @@ function buildCodexSkillPrompt({
           ...inputPaths.map((path, index) => `${index + 1}. ${path}`),
         ]
       : []),
+    ...extraInstructions,
     "Artefactos esperados:",
     ...expectedArtifacts.map((artifact, index) => `${index + 1}. ${artifact}`),
-    ...extraInstructions,
     "Si necesitas archivos intermedios, dejalos dentro de la carpeta de salida del step.",
     "No uses rutas manuales arbitrarias ni analysis_output global fuera del caso actual.",
     "Al finalizar, verifica que los artefactos esperados existan en las rutas indicadas.",
@@ -185,28 +185,41 @@ function buildNetworkDesignPrompt(payload: z.infer<typeof networkDesignPayloadSc
     resolve(payload.outputDir, "network_design_explanation.pdf"),
   ];
 
-  return buildCodexSkillPrompt({
-    skillName: "diseno-redes-empresariales",
-    skillPath,
-    outputDir: payload.outputDir,
-    ...(payload.caseRootDir ? { caseRootDir: payload.caseRootDir } : {}),
-    inputPaths: payload.caseDescription ? [] : [payload.inputFile],
-    expectedArtifacts,
-    extraInstructions: [
-      ...(payload.caseDescription
-        ? [
-            "Analiza el caso principalmente desde el requerimiento en lenguaje natural incluido a continuacion.",
-            "",
-            "Caso a analizar:",
-            payload.caseDescription,
-          ]
-        : [`Lee el requerimiento estructurado desde ${payload.inputFile}.`]),
-      "Genera la explicacion visible en Markdown y luego deja el handoff JSON y el PDF en la misma carpeta de salida.",
-      ...(payload.explanationFile
-        ? [`Si ya existe una explicacion visible definitiva, reutilizala desde ${payload.explanationFile}.`]
-        : []),
-    ],
-  });
+  const lines = [
+    "Usa el skill diseno-redes-empresariales.",
+    `El skill esta en ${skillPath}.`,
+    "Ejecuta el trabajo de forma completamente no interactiva dentro de esta sesion de Codex CLI.",
+    ...(payload.caseDescription
+      ? [
+          "",
+          "Caso a analizar:",
+          payload.caseDescription,
+        ]
+      : [
+          "Entradas obligatorias:",
+          `1. ${payload.inputFile}`,
+          `Lee el requerimiento estructurado desde ${payload.inputFile}.`,
+        ]),
+    "",
+    `La carpeta de salida del step es ${payload.outputDir}.`,
+    ...(payload.caseRootDir
+      ? [
+          `Este job pertenece al caso ${payload.caseRootDir}.`,
+          `No escribas archivos fuera de ${payload.caseRootDir}. Solo puedes leer fuera de esa carpeta si es para consumir assets internos del skill o archivos fuente del repositorio.`,
+        ]
+      : []),
+    "Artefactos esperados:",
+    ...expectedArtifacts.map((artifact, index) => `${index + 1}. ${artifact}`),
+    "Genera la explicacion visible en Markdown y luego deja el handoff JSON y el PDF en la misma carpeta de salida.",
+    ...(payload.explanationFile
+      ? [`Si ya existe una explicacion visible definitiva, reutilizala desde ${payload.explanationFile}.`]
+      : []),
+    "Si necesitas archivos intermedios, dejalos dentro de la carpeta de salida del step.",
+    "No uses rutas manuales arbitrarias ni analysis_output global fuera del caso actual.",
+    "Al finalizar, verifica que los artefactos esperados existan en las rutas indicadas.",
+  ];
+
+  return lines.join("\n");
 }
 
 function buildNetworkQuotePrompt(payload: z.infer<typeof networkQuotePayloadSchema>, runtimeEnv: AppEnvironment) {
@@ -226,7 +239,7 @@ function buildNetworkQuotePrompt(payload: z.infer<typeof networkQuotePayloadSche
     expectedArtifacts,
     extraInstructions: [
       `Consume el handoff o input comercial desde ${payload.inputFile}.`,
-      "No recalcules diseno; solo transforma el input recibido a cotizacion preliminar, explicacion visible y PDF dentro de la carpeta del step.",
+      "No recalcules diseno; solo transforma el input recibido a cotizacion preliminar, explicacion visible y PDF con la cotización explicada, dentro de la carpeta del step.",
       ...(payload.explanationFile
         ? [`Si ya existe una explicacion visible definitiva, reutilizala desde ${payload.explanationFile}.`]
         : []),

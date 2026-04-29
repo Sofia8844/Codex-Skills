@@ -112,7 +112,38 @@ services:
       - ./output:/usr/src/app/output
       - ${CODEX_HOME_HOST}:/root/.codex
     restart: ${RESTART_POLICY}
-
+  skill-worker-2:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: skill-worker-2
+    command: ["node", "dist/apps/skill-worker/index.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH}
+      RABBITMQ_CONNECT_RETRIES: ${RABBITMQ_CONNECT_RETRIES}
+      RABBITMQ_CONNECT_DELAY_MS: ${RABBITMQ_CONNECT_DELAY_MS}
+      SKILL_JOBS_QUEUE: ${SKILL_JOBS_QUEUE}
+      EMAIL_JOBS_QUEUE: ${EMAIL_JOBS_QUEUE}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      PROJECT_ROOT: ${PROJECT_ROOT}
+      MAX_PROCESS_OUTPUT_CHARS: ${MAX_PROCESS_OUTPUT_CHARS}
+    volumes:
+      - ./output:/usr/src/app/output
+      - ${CODEX_HOME_HOST}:/root/.codex
+    restart: ${RESTART_POLICY}
   email-worker:
     build:
       context: .
