@@ -40,11 +40,16 @@ function buildEmailText(job: Awaited<ReturnType<JobsRepository["findById"]>>) {
 
   return [
     `Job ID: ${job.id}`,
+    `Requirement ID: ${job.requirementId ?? "N/A"}`,
     `Skill: ${job.skillName}`,
+    `Execution Mode: ${job.executionMode}`,
+    `Workflow: ${job.workflowName ?? "N/A"}`,
+    `Step: ${job.stepName ?? "N/A"}`,
     `Status: ${job.status}`,
     `Attempts: ${job.attempts}`,
     `Started At: ${job.startedAt?.toISOString() ?? "N/A"}`,
     `Finished At: ${job.finishedAt?.toISOString() ?? "N/A"}`,
+    `Case Root Dir: ${job.caseRootDir ?? "N/A"}`,
     `Output File: ${job.outputFile ?? "N/A"}`,
     `Error: ${job.errorMessage ?? "N/A"}`,
   ].join("\n");

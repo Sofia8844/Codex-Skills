@@ -14,13 +14,18 @@ export const notificationStatusSchema = z.enum([
   "FAILED",
 ]);
 
+export const executionModeSchema = z.enum(["standalone", "workflow"]);
+
 export const jobPayloadSchema = z.record(z.string(), z.unknown());
 
-export const createJobRequestSchema = z.object({
-  skillName: z.string().min(1),
-  notifyEmail: z.string().email(),
-  payload: jobPayloadSchema.default({}),
-});
+export const createJobRequestSchema = z
+  .object({
+    skillName: z.string().min(1),
+    notifyEmail: z.string().email(),
+    caseName: z.string().min(1).optional(),
+    payload: jobPayloadSchema.default({}),
+  })
+  .strict();
 
 export const jobIdParamsSchema = z.object({
   id: z.string().uuid(),
@@ -30,6 +35,15 @@ export const skillJobMessageSchema = z.object({
   jobId: z.string().uuid(),
   skillName: z.string().min(1),
   notifyEmail: z.string().email(),
+  requirementId: z.string().min(1).optional(),
+  requirementUuid: z.string().uuid().nullable().optional(),
+  executionMode: executionModeSchema.optional(),
+  workflowName: z.string().min(1).nullable().optional(),
+  stepName: z.string().min(1).nullable().optional(),
+  workflowRunId: z.string().uuid().nullable().optional(),
+  workflowStepId: z.string().uuid().nullable().optional(),
+  caseRootDir: z.string().min(1).nullable().optional(),
+  outputDir: z.string().min(1).nullable().optional(),
   payload: jobPayloadSchema,
   createdAt: z.string().datetime(),
 });
@@ -46,6 +60,7 @@ export const emailJobMessageSchema = z.object({
 
 export type JobStatus = z.infer<typeof jobStatusSchema>;
 export type NotificationStatus = z.infer<typeof notificationStatusSchema>;
+export type ExecutionMode = z.infer<typeof executionModeSchema>;
 export type JobPayload = z.infer<typeof jobPayloadSchema>;
 export type CreateJobRequest = z.infer<typeof createJobRequestSchema>;
 export type SkillJobMessage = z.infer<typeof skillJobMessageSchema>;
@@ -57,6 +72,15 @@ export interface JobRecord {
   status: JobStatus;
   notificationEmail: string;
   notificationStatus: NotificationStatus;
+  requirementId: string | null;
+  requirementUuid: string | null;
+  executionMode: ExecutionMode;
+  workflowName: string | null;
+  stepName: string | null;
+  workflowRunId: string | null;
+  workflowStepId: string | null;
+  caseRootDir: string | null;
+  outputDir: string | null;
   payload: JobPayload;
   attempts: number;
   stdout: string | null;
@@ -80,6 +104,15 @@ export function serializeJob(job: JobRecord) {
     status: job.status,
     notificationEmail: job.notificationEmail,
     notificationStatus: job.notificationStatus,
+    requirementId: job.requirementId,
+    requirementUuid: job.requirementUuid,
+    executionMode: job.executionMode,
+    workflowName: job.workflowName,
+    stepName: job.stepName,
+    workflowRunId: job.workflowRunId,
+    workflowStepId: job.workflowStepId,
+    caseRootDir: job.caseRootDir,
+    outputDir: job.outputDir,
     payload: job.payload,
     attempts: job.attempts,
     stdout: job.stdout,
@@ -102,6 +135,15 @@ export function buildSkillJobMessage(job: JobRecord): SkillJobMessage {
     jobId: job.id,
     skillName: job.skillName,
     notifyEmail: job.notificationEmail,
+    requirementId: job.requirementId ?? undefined,
+    requirementUuid: job.requirementUuid,
+    executionMode: job.executionMode,
+    workflowName: job.workflowName,
+    stepName: job.stepName,
+    workflowRunId: job.workflowRunId,
+    workflowStepId: job.workflowStepId,
+    caseRootDir: job.caseRootDir,
+    outputDir: job.outputDir,
     payload: job.payload,
     createdAt: job.createdAt.toISOString(),
   };

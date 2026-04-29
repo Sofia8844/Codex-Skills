@@ -4,6 +4,12 @@ import { ZodError } from "zod";
 import { env } from "../../shared/config/env.js";
 import { JobsRepository } from "../../shared/db/jobs-repository.js";
 import {
+  ArtifactsRepository,
+  RequirementsRepository,
+  WorkflowRunsRepository,
+  WorkflowStepsRepository,
+} from "../../shared/db/workflow-repository.js";
+import {
   assertDatabaseConnection,
   closeDatabaseConnection,
 } from "../../shared/db/postgres.js";
@@ -25,6 +31,7 @@ import {
   parseMessage,
   publishJson,
 } from "../../shared/rabbitmq/rabbitmq.js";
+import { WorkflowOrchestratorService } from "../../shared/workflows/workflow-orchestrator.js";
 
 const logger = createLogger("worker:skill");
 
@@ -35,6 +42,14 @@ async function main() {
   const consumerChannel = await createConsumerChannel(rabbitConnection);
   const publisherChannel = await createPublisherChannel(rabbitConnection);
   const jobsRepository = new JobsRepository();
+  const workflowOrchestrator = new WorkflowOrchestratorService(
+    new RequirementsRepository(),
+    new WorkflowRunsRepository(),
+    new WorkflowStepsRepository(),
+    new ArtifactsRepository(),
+    jobsRepository,
+    publisherChannel,
+  );
 
   async function enqueueEmailNotification(jobId: string) {
     const job = await jobsRepository.findById(jobId);
@@ -75,7 +90,7 @@ async function main() {
       consumerChannel.ack(message);
       return;
     }
-    // 1. Marca como RUNNING en DB
+
     const runningJob = await jobsRepository.markRunning(job.id);
 
     if (!runningJob) {
@@ -88,33 +103,37 @@ async function main() {
     }
 
     try {
-      // 2. Resuelve qué comando correr
+      await workflowOrchestrator.handleJobStarted(runningJob);
+
       const execution = resolveSkillExecution(
         runningJob.skillName,
         runningJob.payload,
         env,
       );
-      // 3. Lanza el proceso
       const result = await runSpawnedProcess(
         execution,
         env.maxProcessOutputChars,
       );
-// 4. Según el exit code
+
       if (result.exitCode === 0) {
-        await jobsRepository.markCompleted(runningJob.id, {
+        const completedJob = await jobsRepository.markCompleted(runningJob.id, {
           stdout: result.stdout || null,
           stderr: result.stderr || null,
           outputFile: execution.outputFile ?? null,
           exitCode: result.exitCode,
         });
+
+        await reconcileWorkflowIfNeeded(workflowOrchestrator, completedJob);
       } else {
-        await jobsRepository.markFailed(runningJob.id, {
+        const failedJob = await jobsRepository.markFailed(runningJob.id, {
           stdout: result.stdout || null,
           stderr: result.stderr || null,
           outputFile: execution.outputFile ?? null,
           exitCode: result.exitCode,
           errorMessage: `Skill exited with code ${String(result.exitCode ?? "unknown")}.`,
         });
+
+        await reconcileWorkflowIfNeeded(workflowOrchestrator, failedJob);
       }
     } catch (error) {
       const errorMessage =
@@ -122,15 +141,17 @@ async function main() {
           ? error.message
           : `Skill execution failed: ${getErrorMessage(error)}`;
 
-      await jobsRepository.markFailed(runningJob.id, {
+      const failedJob = await jobsRepository.markFailed(runningJob.id, {
         stdout: null,
         stderr: null,
         outputFile: null,
         exitCode: null,
         errorMessage,
       });
+
+      await reconcileWorkflowIfNeeded(workflowOrchestrator, failedJob);
     }
-// 5. Encola email de notificación
+
     await enqueueEmailNotification(runningJob.id);
     consumerChannel.ack(message);
   }
@@ -185,6 +206,20 @@ async function main() {
   process.on("SIGTERM", () => {
     void shutdown("SIGTERM");
   });
+}
+
+async function reconcileWorkflowIfNeeded(
+  workflowOrchestrator: WorkflowOrchestratorService,
+  job: Awaited<ReturnType<JobsRepository["markCompleted"]>>,
+) {
+  try {
+    await workflowOrchestrator.reconcileAfterJob(job);
+  } catch (error) {
+    logger.error("Workflow reconciliation failed after terminal job update", {
+      jobId: job.id,
+      error,
+    });
+  }
 }
 
 void main().catch(async (error) => {

@@ -3,6 +3,11 @@ import type { Server } from "node:http";
 import { env } from "../../shared/config/env.js";
 import { JobsRepository } from "../../shared/db/jobs-repository.js";
 import {
+  RequirementsRepository,
+  WorkflowRunsRepository,
+  WorkflowStepsRepository,
+} from "../../shared/db/workflow-repository.js";
+import {
   assertDatabaseConnection,
   closeDatabaseConnection,
 } from "../../shared/db/postgres.js";
@@ -14,6 +19,8 @@ import {
 } from "../../shared/rabbitmq/rabbitmq.js";
 import { createApp } from "./app.js";
 import { JobsService } from "./services/jobs-service.js";
+import { WorkflowLaunchService } from "./services/workflow-launch-service.js";
+import { WorkflowRunsService } from "./services/workflow-runs-service.js";
 
 const logger = createLogger("api:server");
 
@@ -24,8 +31,19 @@ async function main() {
   const publisherChannel = await createPublisherChannel(rabbitConnection);
 
   const jobsRepository = new JobsRepository();
-  const jobsService = new JobsService(jobsRepository, publisherChannel);
-  const app = createApp(jobsService);
+  const requirementsRepository = new RequirementsRepository();
+  const workflowRunsRepository = new WorkflowRunsRepository();
+  const workflowStepsRepository = new WorkflowStepsRepository();
+  const workflowLaunchService = new WorkflowLaunchService(
+    requirementsRepository,
+    workflowRunsRepository,
+    workflowStepsRepository,
+    jobsRepository,
+    publisherChannel,
+  );
+  const jobsService = new JobsService(jobsRepository, workflowLaunchService);
+  const workflowRunsService = new WorkflowRunsService(workflowLaunchService);
+  const app = createApp(jobsService, workflowRunsService);
 
   const server = await new Promise<Server>((resolveServer) => {
     const instance = app.listen(env.port, () => {

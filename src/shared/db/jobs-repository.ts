@@ -1,7 +1,7 @@
 import type { QueryResultRow } from "pg";
 
-import type { JobPayload, JobRecord } from "../jobs/job-types.js";
-import { query } from "./postgres.js";
+import type { ExecutionMode, JobPayload, JobRecord } from "../jobs/job-types.js";
+import { query, type DatabaseExecutor } from "./postgres.js";
 
 interface JobRow extends QueryResultRow {
   id: string;
@@ -9,6 +9,16 @@ interface JobRow extends QueryResultRow {
   status: JobRecord["status"];
   notification_email: string;
   notification_status: JobRecord["notificationStatus"];
+  requirement_id: string | null;
+  requirement_uuid: string | null;
+  execution_mode: ExecutionMode | null;
+  workflow_name: string | null;
+  step_name: string | null;
+  parent_job_id: string | null;
+  workflow_run_id: string | null;
+  workflow_step_id: string | null;
+  case_root_dir: string | null;
+  output_dir: string | null;
   payload: JobPayload;
   attempts: number;
   stdout: string | null;
@@ -23,6 +33,12 @@ interface JobRow extends QueryResultRow {
   notification_error: string | null;
   created_at: Date | string;
   updated_at: Date | string;
+}
+
+const defaultExecutor: DatabaseExecutor = { query };
+
+function getExecutor(executor?: DatabaseExecutor) {
+  return executor ?? defaultExecutor;
 }
 
 function toDate(value: Date | string | null) {
@@ -40,6 +56,15 @@ function mapRow(row: JobRow): JobRecord {
     status: row.status,
     notificationEmail: row.notification_email,
     notificationStatus: row.notification_status,
+    requirementId: row.requirement_id,
+    requirementUuid: row.requirement_uuid,
+    executionMode: row.execution_mode ?? "standalone",
+    workflowName: row.workflow_name,
+    stepName: row.step_name,
+    workflowRunId: row.workflow_run_id,
+    workflowStepId: row.workflow_step_id,
+    caseRootDir: row.case_root_dir,
+    outputDir: row.output_dir,
     payload: row.payload,
     attempts: row.attempts,
     stdout: row.stdout,
@@ -70,14 +95,51 @@ export class JobsRepository {
     skillName: string;
     payload: JobPayload;
     notificationEmail: string;
-  }) {
-    const result = await query<JobRow>(
+    requirementCode: string;
+    requirementUuid: string;
+    executionMode: ExecutionMode;
+    workflowName?: string;
+    stepName?: string;
+    workflowRunId?: string;
+    workflowStepId?: string;
+    caseRootDir: string;
+    outputDir?: string;
+  }, executor?: DatabaseExecutor) {
+    const result = await getExecutor(executor).query<JobRow>(
       `
-        INSERT INTO jobs (skill_name, payload, notification_email, status, notification_status)
-        VALUES ($1, $2::jsonb, $3, 'PENDING', 'PENDING')
+        INSERT INTO jobs (
+          skill_name,
+          payload,
+          notification_email,
+          requirement_id,
+          requirement_uuid,
+          execution_mode,
+          workflow_name,
+          step_name,
+          workflow_run_id,
+          workflow_step_id,
+          case_root_dir,
+          output_dir,
+          status,
+          notification_status
+        )
+        VALUES ($1, $2::jsonb, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'PENDING', 'PENDING')
         RETURNING *
       `,
-      [input.skillName, JSON.stringify(input.payload), input.notificationEmail],
+      [
+        input.skillName,
+        JSON.stringify(input.payload),
+        input.notificationEmail,
+        input.requirementCode,
+        input.requirementUuid,
+        input.executionMode,
+        input.workflowName ?? null,
+        input.stepName ?? null,
+        input.workflowRunId ?? null,
+        input.workflowStepId ?? null,
+        input.caseRootDir,
+        input.outputDir ?? null,
+      ],
     );
 
     return mapRow(requireRow(result.rows[0], "createPendingJob"));
@@ -186,8 +248,8 @@ export class JobsRepository {
     return mapRow(requireRow(result.rows[0], "markFailed"));
   }
 
-  async markQueuePublishFailed(id: string, errorMessage: string) {
-    const result = await query<JobRow>(
+  async markQueuePublishFailed(id: string, errorMessage: string, executor?: DatabaseExecutor) {
+    const result = await getExecutor(executor).query<JobRow>(
       `
         UPDATE jobs
         SET

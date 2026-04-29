@@ -2,11 +2,16 @@ import express from "express";
 
 import { createLogger } from "../../shared/logging/logger.js";
 import { createJobsRouter } from "./routes/jobs-routes.js";
+import { createWorkflowRunsRouter } from "./routes/workflow-runs-routes.js";
 import type { JobsService } from "./services/jobs-service.js";
+import type { WorkflowRunsService } from "./services/workflow-runs-service.js";
 
 const logger = createLogger("api:app");
 
-export function createApp(jobsService: JobsService) {
+export function createApp(
+  jobsService: JobsService,
+  workflowRunsService: WorkflowRunsService,
+) {
   const app = express();
 
   app.use(express.json({ limit: "1mb" }));
@@ -18,6 +23,7 @@ export function createApp(jobsService: JobsService) {
   });
 
   app.use("/jobs", createJobsRouter(jobsService));
+  app.use("/workflow-runs", createWorkflowRunsRouter(workflowRunsService));
 
   app.use(
     (
